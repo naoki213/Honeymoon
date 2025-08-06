@@ -19,7 +19,7 @@ body.locked {
   background-size: cover;
 }
 
-/* ①トップページ */
+/* トップページ */
 #passwordScreen {
   display: flex;
   flex-direction: column;
@@ -58,12 +58,12 @@ body.locked {
   cursor: pointer;
 }
 
-/* 日付ナビ（②だけ表示） */
+/* 日付ナビ */
 #dayNav {
   display: none;
   position: sticky;
   top: 0;
-  background: rgba(25, 118, 210, 0.95);
+  background: rgba(66, 165, 245, 0.95); /* 明るめブルー */
   overflow-x: auto;
   white-space: nowrap;
   padding: 8px;
@@ -81,25 +81,28 @@ body.locked {
   flex-shrink: 0;
 }
 #dayNav button.active {
-  background: #ff9800;
+  background: #64b5f6; /* 水色 */
   color: white;
 }
 
-/* 各ページ */
+/* ページ共通 */
 .page {
   display: none;
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 60px;
+  background: #f9fbfd; /* 淡いブルー */
+}
+.dayContent {
+  display: none;
 }
 
-/* カード（②日程） */
+/* カード */
 .card {
   background: white;
-  margin-bottom: 10px;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
+  margin-bottom: 15px;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.08);
 }
 .card h3 {
   margin-top: 0;
@@ -110,26 +113,37 @@ body.locked {
   font-size: 14px;
 }
 
-/* 下部ナビ（②③④） */
+/* タップ可能カード */
+.tappable {
+  cursor: pointer;
+}
+.detail-label {
+  font-size: 14px;
+  background: transparent;
+  color: #ff9800;
+  margin-left: 6px;
+}
+
+/* 下部ナビ */
 #bottomNav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: white;
+  background: #e3f2fd; /* 淡いブルー */
   display: flex;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #bbdefb;
 }
 #bottomNav button {
   flex: 1;
   padding: 14px;
   font-size: 15px;
   border: none;
-  background: white;
+  background: transparent;
   cursor: pointer;
 }
 #bottomNav button.active {
-  background: #1976d2;
+  background: #64b5f6;
   color: white;
 }
 
@@ -144,11 +158,13 @@ body.locked {
 }
 #detailModalContent {
   background: white;
-  margin: 10% auto;
+  margin: 5% auto;
   padding: 15px;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
+  max-height: 90vh;       /* 高さ制限 */
+  overflow-y: auto;       /* スクロール可能 */
 }
 #detailModalContent img {
   width: 100%;
@@ -191,7 +207,7 @@ body.locked {
 <!-- ②③④コンテンツ -->
 <div id="appContent" style="display:none;">
 
-  <!-- ②日程ページ -->
+  <!-- 日付ナビ -->
   <div id="dayNav">
     <button onclick="showDay(1)" class="active">9/12</button>
     <button onclick="showDay(2)">9/13</button>
@@ -206,58 +222,64 @@ body.locked {
     <button onclick="showDay(11)">9/22</button>
   </div>
 
+  <!-- 日程ページ -->
   <div id="page-schedule" class="page">
 
     <!-- 1日目 -->
-    <div id="day1" class="dayContent" style="display:block;">
+    <div id="day1" class="dayContent">
 
-      <div class="card" onclick="showDetail('15:30 出発','自宅を出発！新婚旅行の始まりです✨','','')">
+      <!-- 出発（非タップ） -->
+      <div class="card">
         <h3>15:30 出発</h3>
-        <p>自宅を出発！</p>
+        <p>いよいよ新婚旅行スタート！自宅から空港へ向かいます。</p>
       </div>
 
-      <div class="card" onclick="showDetail('19:05 関空 → 仁川','フライトで韓国・仁川へ✈️ 21:00着予定。','','')">
+      <!-- フライト（非タップ） -->
+      <div class="card">
         <h3>19:05 関空 → 仁川</h3>
-        <p>21:00 到着予定</p>
+        <p>韓国・仁川国際空港へフライト✈️（到着予定：21:00）</p>
       </div>
 
-      <div class="card" onclick="showDetail(
-        '21:00 仁川空港到着',
-        '入国後、空港周辺で夜ご飯。<br><br><strong>おすすめ3店舗</strong><ul>' +
-        '<li><a href=\'https://goo.gl/maps/6aYtP7hXoUHh1qDGA\' target=\'_blank\'>百済参鶏湯</a> - 滋養強壮の参鶏湯</li>' +
-        '<li><a href=\'https://goo.gl/maps/pM7Dsv6wQbQHAF1L8\' target=\'_blank\'>カルビタン</a> - 牛カルビスープ</li>' +
-        '<li><a href=\'https://goo.gl/maps/Qctmym3dgA3bqT3P9\' target=\'_blank\'>キムチチゲ</a> - 韓国定番鍋</li>' +
-        '</ul>',
-        '',
-        ''
-      )">
-        <h3>21:00 仁川空港到着</h3>
-        <p>空港で夜ご飯</p>
-      </div>
-
-      <div class="card" onclick="showDetail(
+      <!-- ホテル（タップ） -->
+      <div class="card tappable" onclick="showDetail(
         '22:00 ホテルチェックイン',
-        'ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）<br><a href=\'https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z\' target=\'_blank\'>📍 Googleマップで開く</a>',
+        'ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）',
         '',
-        ''
+        'https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z'
       )">
-        <h3>22:00 ホテルチェックイン</h3>
+        <h3>22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
         <p>ホテルビュー仁川エアポート</p>
       </div>
 
-      <div class="card" onclick="showDetail(
-        '23:00 夜の自由時間',
-        'パラダイスシティ（Paradise City）でカジノ体験！？<br><a href=\'https://goo.gl/maps/h8f5TjzEom82\' target=\'_blank\'>📍 Googleマップで開く</a>',
+      <!-- カジノ（タップ） -->
+      <div class="card tappable" onclick="showDetail(
+        '23:00 夜の自由時間 - パラダイスシティ',
+        '<img src=\'https://www.p-city.com/mobilePub/static/images/hotelParadise/img_main_visual.jpg\' style=\'width:100%;border-radius:8px;margin-bottom:8px;\'>'
+        + '✨ <strong>基本概要</strong><ul>'
+        + '<li>仁川国際空港から車で約5分。無料シャトルバスあり。</li>'
+        + '<li>東京ドーム約7個分の広さを誇る大型複合リゾート。</li></ul>'
+        + '🎨 <strong>アート × デザイン</strong><ul>'
+        + '<li>約3,000点以上のアート作品を館内に展示。</li>'
+        + '<li>草間彌生やダミアン・ハーストなど世界的アーティストの作品も。</li></ul>'
+        + '🏨 & 🎲 <strong>ホテルとカジノ</strong><ul>'
+        + '<li>高級5つ星ホテル。</li>'
+        + '<li>外国人専用の24時間営業カジノ。</li></ul>'
+        + '🎡 <strong>エンタメ＆レジャー</strong><ul>'
+        + '<li>Wonderbox（屋内遊園地）：観覧車やメリーゴーランド。</li>'
+        + '<li>スパ、温水プール、サウナ、ジムも完備。</li></ul>'
+        + '🛍️ <strong>ショッピングとグルメ</strong><ul>'
+        + '<li>多彩なレストラン、カフェ、ショップ。</li>'
+        + '<li>フォトスポット多数（光る通路など）。</li></ul>',
         '',
-        ''
+        'https://goo.gl/maps/h8f5TjzEom82'
       )">
-        <h3>23:00 夜の自由時間</h3>
+        <h3>23:00 夜の自由時間 <span class="detail-label">📌</span></h3>
         <p>なおきはカジノ！？</p>
       </div>
 
     </div>
 
-    <!-- 2日目以降はダミー -->
+    <!-- 2日目以降ダミー -->
     <div id="day2" class="dayContent"><p>2日目の予定</p></div>
     <div id="day3" class="dayContent"><p>3日目の予定</p></div>
     <div id="day4" class="dayContent"><p>4日目の予定</p></div>
@@ -268,15 +290,14 @@ body.locked {
     <div id="day9" class="dayContent"><p>9日目の予定</p></div>
     <div id="day10" class="dayContent"><p>10日目の予定</p></div>
     <div id="day11" class="dayContent"><p>11日目の予定</p></div>
-
   </div>
 
-  <!-- ③予算ページ -->
+  <!-- 予算ページ -->
   <div id="page-budget" class="page">
     <p>予算ページ（作成予定）</p>
   </div>
 
-  <!-- ④アルバムページ -->
+  <!-- アルバムページ -->
   <div id="page-album" class="page">
     <p>アルバムページ（作成予定）</p>
   </div>
@@ -307,6 +328,7 @@ function checkPassword() {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("appContent").style.display = "block";
     showPage('schedule');
+    showDay(1);
     document.body.classList.remove("locked");
   } else {
     alert("パスワードが違います");
