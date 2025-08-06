@@ -63,7 +63,7 @@ body.locked {
   display: none;
   position: sticky;
   top: 0;
-  background: rgba(66, 165, 245, 0.95); /* 明るめブルー */
+  background: rgba(66, 165, 245, 0.95);
   overflow-x: auto;
   white-space: nowrap;
   padding: 8px;
@@ -81,7 +81,7 @@ body.locked {
   flex-shrink: 0;
 }
 #dayNav button.active {
-  background: #64b5f6; /* 水色 */
+  background: #64b5f6;
   color: white;
 }
 
@@ -90,28 +90,36 @@ body.locked {
   display: none;
   padding: 15px;
   margin-bottom: 60px;
-  background: #f9fbfd; /* 淡いブルー */
 }
 .dayContent {
   display: none;
-}
-
-/* 1日目専用背景 */
-#day1 {
-  background-image: url('https://imgcp.aacdn.jp/img-a/1200/900/aa/gm/article/4/5/4/1/9/3/topimg_original.jpg');
+  min-height: 100vh;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   padding: 15px;
 }
 
-/* 通常カード */
+/* 全日程 背景画像 */
+#day1 {background-image:url('https://imgcp.aacdn.jp/img-a/1200/900/aa/gm/article/4/5/4/1/9/3/topimg_original.jpg');}
+#day2 {background-image:url('https://cdn.4travel.jp/img/tcs/t/pict/src/19/57/00/src_19570092.jpg?1281578589');}
+#day3 {background-image:url('https://i.pinimg.com/originals/6c/5f/38/6c5f38ac93c1eeb7367f641aca058454.jpg');}
+#day4 {background-image:url('https://m.media-amazon.com/images/I/814oApiuIYL._CR100,0,1060,1060_.jpg');}
+#day5 {background-image:url('https://media-cdn.tripadvisor.com/media/photo-s/12/5f/14/fb/pisa.jpg');}
+#day6 {background-image:url('https://th.bing.com/th/id/R.4c411048934adaccd1fadcc4576f33b0?rik=Po88E5fPst8HKw&riu=http%3a%2f%2fwww.10wallpaper.com%2fwallpaper%2f1280x1024%2f1209%2fcanal_grande_venice-City_photography_wallpaper_1280x1024.jpg&ehk=cOnc0thbm9gRrDDscK7gefQBLqVp3OBm1nLB9jWeN0k%3d&risl=&pid=ImgRaw&r=0');}
+#day7 {background-image:url('https://www.travelwith.jp/area/wp-content/uploads/sites/3/2020/06/025-2.jpg');}
+#day8 {background-image:url('https://www.myushop.net/uploads/blog/EF164_700.jpg');}
+#day9 {background-image:url('https://divnil.com/wallpaper/ipad/img/app/b/a/barcelona-spain-wallpaper-4xcvsn5_c064f5c4094f1e55036f2d37cc1c55b7_raw.jpg');}
+#day10 {background-image:url('https://as1.ftcdn.net/v2/jpg/05/69/39/60/1000_F_569396098_hqZEijrVB7OYM9D3QhXQrmOd9kWUUhca.jpg');}
+#day11 {background-image:url('https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg');}
+
+/* カード（半透明） */
 .card {
-  background: white;
+  background: rgba(255, 255, 255, 0.7);
   margin-bottom: 15px;
   padding: 14px;
   border-radius: 10px;
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.08);
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
 .card h3 {
   margin-top: 0;
@@ -120,12 +128,6 @@ body.locked {
 .card p {
   margin: 5px 0;
   font-size: 14px;
-}
-
-/* 1日目の半透明カード */
-#day1 .card {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
 
 /* タップ可能カード */
@@ -145,7 +147,7 @@ body.locked {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #e3f2fd; /* 淡いブルー */
+  background: rgba(227, 242, 253, 0.95);
   display: flex;
   border-top: 1px solid #bbdefb;
 }
@@ -240,82 +242,44 @@ body.locked {
   <!-- 日程ページ -->
   <div id="page-schedule" class="page">
 
-    <!-- 1日目 -->
+    <!-- 1日目（例） -->
     <div id="day1" class="dayContent">
-
-      <!-- 出発（非タップ） -->
       <div class="card">
         <h3>15:30 出発</h3>
         <p>いよいよ新婚旅行スタート！自宅から空港へ向かいます。</p>
       </div>
-
-      <!-- フライト（非タップ） -->
       <div class="card">
         <h3>19:05 関空 → 仁川</h3>
         <p>韓国・仁川国際空港へフライト✈️（到着予定：21:00）</p>
       </div>
-
-      <!-- ホテル（タップ） -->
-      <div class="card tappable" onclick="showDetail(
-        '22:00 ホテルチェックイン',
-        'ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）',
-        '',
-        'https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z'
-      )">
+      <div class="card tappable" onclick="showDetail('22:00 ホテルチェックイン','ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）','','https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z')">
         <h3>22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
         <p>ホテルビュー仁川エアポート</p>
       </div>
-
-      <!-- カジノ（タップ） -->
-      <div class="card tappable" onclick="showDetail(
-        '23:00 夜の自由時間 - パラダイスシティ',
-        '<img src=\'https://www.p-city.com/mobilePub/static/images/hotelParadise/img_main_visual.jpg\' style=\'width:100%;border-radius:8px;margin-bottom:8px;\'>'
-        + '✨ <strong>基本概要</strong><ul>'
-        + '<li>仁川国際空港から車で約5分。無料シャトルバスあり。</li>'
-        + '<li>東京ドーム約7個分の広さを誇る大型複合リゾート。</li></ul>'
-        + '🎨 <strong>アート × デザイン</strong><ul>'
-        + '<li>約3,000点以上のアート作品を館内に展示。</li>'
-        + '<li>草間彌生やダミアン・ハーストなど世界的アーティストの作品も。</li></ul>'
-        + '🏨 & 🎲 <strong>ホテルとカジノ</strong><ul>'
-        + '<li>高級5つ星ホテル。</li>'
-        + '<li>外国人専用の24時間営業カジノ。</li></ul>'
-        + '🎡 <strong>エンタメ＆レジャー</strong><ul>'
-        + '<li>Wonderbox（屋内遊園地）：観覧車やメリーゴーランド。</li>'
-        + '<li>スパ、温水プール、サウナ、ジムも完備。</li></ul>'
-        + '🛍️ <strong>ショッピングとグルメ</strong><ul>'
-        + '<li>多彩なレストラン、カフェ、ショップ。</li>'
-        + '<li>フォトスポット多数（光る通路など）。</li></ul>',
-        '',
-        'https://goo.gl/maps/h8f5TjzEom82'
-      )">
+      <div class="card tappable" onclick="showDetail('23:00 夜の自由時間 - パラダイスシティ','<img src=\'https://www.p-city.com/mobilePub/static/images/hotelParadise/img_main_visual.jpg\' style=\'width:100%;border-radius:8px;margin-bottom:8px;\'>✨ 基本概要...','','https://goo.gl/maps/h8f5TjzEom82')">
         <h3>23:00 夜の自由時間 <span class="detail-label">📌</span></h3>
         <p>なおきはカジノ！？</p>
       </div>
-
     </div>
 
-    <!-- 2日目以降ダミー -->
-    <div id="day2" class="dayContent"><p>2日目の予定</p></div>
-    <div id="day3" class="dayContent"><p>3日目の予定</p></div>
-    <div id="day4" class="dayContent"><p>4日目の予定</p></div>
-    <div id="day5" class="dayContent"><p>5日目の予定</p></div>
-    <div id="day6" class="dayContent"><p>6日目の予定</p></div>
-    <div id="day7" class="dayContent"><p>7日目の予定</p></div>
-    <div id="day8" class="dayContent"><p>8日目の予定</p></div>
-    <div id="day9" class="dayContent"><p>9日目の予定</p></div>
-    <div id="day10" class="dayContent"><p>10日目の予定</p></div>
-    <div id="day11" class="dayContent"><p>11日目の予定</p></div>
+    <!-- 2日目以降は背景だけ設定済（内容は追加可能） -->
+    <div id="day2" class="dayContent"></div>
+    <div id="day3" class="dayContent"></div>
+    <div id="day4" class="dayContent"></div>
+    <div id="day5" class="dayContent"></div>
+    <div id="day6" class="dayContent"></div>
+    <div id="day7" class="dayContent"></div>
+    <div id="day8" class="dayContent"></div>
+    <div id="day9" class="dayContent"></div>
+    <div id="day10" class="dayContent"></div>
+    <div id="day11" class="dayContent"></div>
   </div>
 
   <!-- 予算ページ -->
-  <div id="page-budget" class="page">
-    <p>予算ページ（作成予定）</p>
-  </div>
+  <div id="page-budget" class="page"><p>予算ページ（作成予定）</p></div>
 
   <!-- アルバムページ -->
-  <div id="page-album" class="page">
-    <p>アルバムページ（作成予定）</p>
-  </div>
+  <div id="page-album" class="page"><p>アルバムページ（作成予定）</p></div>
 
   <!-- 下部ナビ -->
   <div id="bottomNav">
@@ -338,8 +302,7 @@ body.locked {
 
 <script>
 function checkPassword() {
-  const pass = document.getElementById("passwordInput").value;
-  if (pass === "0616") {
+  if (document.getElementById("passwordInput").value === "0616") {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("appContent").style.display = "block";
     showPage('schedule');
@@ -349,7 +312,6 @@ function checkPassword() {
     alert("パスワードが違います");
   }
 }
-
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
   document.getElementById(`page-${page}`).style.display = "block";
@@ -357,23 +319,20 @@ function showPage(page) {
   document.querySelector(`#bottomNav button[onclick*="${page}"]`).classList.add("active");
   document.getElementById("dayNav").style.display = (page === 'schedule') ? 'flex' : 'none';
 }
-
 function showDay(day) {
   document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
   document.getElementById("day" + day).style.display = "block";
   document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
   document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
 }
-
 function showDetail(title, text, image, mapUrl) {
   document.getElementById("detailTitle").textContent = title;
   document.getElementById("detailText").innerHTML = text;
-  const imgEl = document.getElementById("detailImage");
   if (image) {
-    imgEl.src = image;
-    imgEl.style.display = "block";
+    document.getElementById("detailImage").src = image;
+    document.getElementById("detailImage").style.display = "block";
   } else {
-    imgEl.style.display = "none";
+    document.getElementById("detailImage").style.display = "none";
   }
   if (mapUrl) {
     document.getElementById("detailMap").href = mapUrl;
@@ -383,7 +342,6 @@ function showDetail(title, text, image, mapUrl) {
   }
   document.getElementById("detailModal").style.display = "block";
 }
-
 function closeDetail(e) {
   if (e.target.id === "detailModal" || e.target.classList.contains("closeBtn")) {
     document.getElementById("detailModal").style.display = "none";
