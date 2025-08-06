@@ -282,8 +282,109 @@ body.locked {
       </div>
     </div>
 
-    <!-- 2日目以降は背景だけ設定済（内容は追加可能） -->
-    <div id="day2" class="dayContent"></div>
+   <div id="day2" class="dayContent">
+
+  <!-- チェックアウト（非タップ） -->
+  <div class="card">
+    <h3>09:00 チェックアウト</h3>
+    <p>ホテルを出発。空港に向かいます。</p>
+  </div>
+
+  <!-- 空港着＆朝ごはん（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '09:30 仁川空港着 朝ごはん',
+    `<p>仁川空港付近で韓国の地元系朝ごはんを楽しめるおすすめスポットを3つご紹介します。</p>
+    <ol>
+      <li><strong>Pyeongyangok（평양옥）</strong> – 해장국（スープ）老舗<br>
+      営業: 05:00〜正午 / 空港から車15〜20分<br>
+      📍 <a href='https://maps.google.com/?q=Pyeongyangok+Incheon' target='_blank'>Googleマップ</a></li>
+      <li><strong>meallions</strong> – ベーカリーカフェ（空港直結）<br>
+      営業: 早朝〜 / 空港地下1F<br>
+      📍 <a href='https://maps.google.com/?q=meallions+Incheon+Airport' target='_blank'>Googleマップ</a></li>
+      <li><strong>황해해물칼국수</strong> – 海鮮カルグクス<br>
+      営業: 09:00〜19:00 / 新浦市場近く<br>
+      📍 <a href='https://maps.google.com/?q=Hwanghae+Haemul+Kalguksu+Incheon' target='_blank'>Googleマップ</a></li>
+    </ol>`,
+    '',
+    ''
+  )">
+    <h3>09:30 空港着 朝ごはん <span class="detail-label">📌</span></h3>
+    <p>仁川空港付近の人気朝ごはん３選</p>
+  </div>
+
+  <!-- フライト（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '12:35 仁川空港出発（13時間40分）',
+    `<p>アマゾンプライムで観られるおすすめ映画３選</p>
+    <ul>
+      <li>1. <strong>ラ・ラ・ランド</strong> – ミュージカル×ラブストーリー</li>
+      <li>2. <strong>グリーンブック</strong> – 人種差別と友情の感動作</li>
+      <li>3. <strong>インターステラー</strong> – SF×人間ドラマの大作</li>
+    </ul>`,
+    '',
+    ''
+  )">
+    <h3>12:35 仁川発 ✈ ローマ着 19:15 <span class="detail-label">📌</span></h3>
+    <p>フライト中は映画タイム</p>
+  </div>
+
+  <!-- ローマ空港～市内移動（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '20:00〜21:00 ローマ空港→市内',
+    `<ol>
+      <li>入国後、「Fiumicino Aeroporto」駅へ移動</li>
+      <li>券売機で€14の切符購入 → 刻印</li>
+      <li>23/24番ホームから乗車</li>
+      <li>約32分後、Roma Termini駅着</li>
+    </ol>`,
+    '',
+    ''
+  )">
+    <h3>20:00〜21:00 空港からローマ市内へ <span class="detail-label">📌</span></h3>
+    <p>電車で約32分</p>
+  </div>
+
+  <!-- テルミ二駅到着＆タクシー（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '21:00頃 テルミ二駅着→タクシー',
+    `<p>キャリー1つにつき1ユーロ、計約10ユーロ</p>`,
+    '',
+    ''
+  )">
+    <h3>21:00頃 テルミ二駅着 <span class="detail-label">📌</span></h3>
+    <p>タクシーでホテルへ</p>
+  </div>
+
+  <!-- ホテル到着（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '21:00〜22:00 ホテルチェックイン',
+    `<p>Hotel La Ville</p>
+    <a href='https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z' target='_blank'>📍 Googleマップ</a>`,
+    '',
+    'https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z'
+  )">
+    <h3>21:00〜22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
+    <p>Hotel La Ville</p>
+  </div>
+
+  <!-- 夜ご飯（タップ） -->
+  <div class="card tappable" onclick="showDetail(
+    '22:00 ホテル近くで夜ご飯',
+    `<p>予算50ユーロでおすすめレストラン</p>
+    <ul>
+      <li>1. Osteria da Fortunata – 手打ちパスタが絶品</li>
+      <li>2. Armando al Pantheon – ローマ伝統料理</li>
+      <li>3. Trattoria Vecchia Roma – カルボナーラが有名</li>
+    </ul>`,
+    '',
+    ''
+  )">
+    <h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
+    <p>近くのレストランでディナー</p>
+  </div>
+
+</div>
+
     <div id="day3" class="dayContent"></div>
     <div id="day4" class="dayContent"></div>
     <div id="day5" class="dayContent"></div>
