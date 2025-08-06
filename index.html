@@ -108,6 +108,13 @@ body.locked {
   margin: 5px 0;
   font-size: 14px;
 }
+.card ul {
+  padding-left: 20px;
+}
+.card a {
+  text-decoration: none;
+  color: #1976d2;
+}
 
 /* 下部ナビ（②③④） */
 #bottomNav {
@@ -167,14 +174,60 @@ body.locked {
   </div>
 
   <div id="page-schedule" class="page">
+
+    <!-- 一日目 -->
     <div id="day1" class="dayContent" style="display:block;">
+
       <div class="card">
-        <h3>Day 1 Spot</h3>
-        <p>行程内容をここに入力</p>
+        <h3>15:30 出発</h3>
+        <p>自宅を出発！新婚旅行の始まりです✨</p>
       </div>
+
+      <div class="card">
+        <h3>19:05 関空 → 仁川</h3>
+        <p>フライトで韓国・仁川へ✈️</p>
+        <p>到着予定：21:00</p>
+      </div>
+
+      <div class="card">
+        <h3>21:00 仁川空港到着</h3>
+        <p>入国手続きを済ませたら夜ご飯へ。</p>
+        <h4>おすすめ夜ご飯 🍽</h4>
+        <ul>
+          <li><strong>百済参鶏湯</strong> - 滋養強壮の韓国風参鶏湯</li>
+          <li><strong>カルビタン</strong> - 牛カルビのあっさりスープ</li>
+          <li><strong>キムチチゲ</strong> - ピリ辛で温まる韓国定番鍋</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>22:00 ホテルチェックイン</h3>
+        <p>ホテルビュー仁川エアポート</p>
+        <p>無料バスあり（21:36 / 21:56 発）</p>
+        <a href="https://maps.google.com/?q=호텔뷰인천에어포트" target="_blank">
+          📍 Googleマップで開く
+        </a>
+      </div>
+
+      <div class="card">
+        <h3>23:00 夜の自由時間</h3>
+        <p>なおきはカジノ！？🎰</p>
+      </div>
+
     </div>
+
+    <!-- 2日目以降（仮） -->
     <div id="day2" class="dayContent"><p>2日目の予定</p></div>
-    <!-- 他の日付は同様に追加 -->
+    <div id="day3" class="dayContent"><p>3日目の予定</p></div>
+    <div id="day4" class="dayContent"><p>4日目の予定</p></div>
+    <div id="day5" class="dayContent"><p>5日目の予定</p></div>
+    <div id="day6" class="dayContent"><p>6日目の予定</p></div>
+    <div id="day7" class="dayContent"><p>7日目の予定</p></div>
+    <div id="day8" class="dayContent"><p>8日目の予定</p></div>
+    <div id="day9" class="dayContent"><p>9日目の予定</p></div>
+    <div id="day10" class="dayContent"><p>10日目の予定</p></div>
+    <div id="day11" class="dayContent"><p>11日目の予定</p></div>
+
   </div>
 
   <!-- ③予算ページ -->
@@ -230,5 +283,3 @@ function showDay(day) {
 </script>
 </body>
 </html>
-
-
