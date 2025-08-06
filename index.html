@@ -12,7 +12,6 @@ body, html {
   background: #f4f4f4;
 }
 body.locked {
-  /* 高解像度コロッセオ背景 */
   background-image: url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&q=80&w=2400');
   background-position: center;
   background-repeat: no-repeat;
@@ -45,18 +44,14 @@ body.locked {
   cursor: pointer;
 }
 
-/* しおり画面 */
-#shiori {
-  display: none;
-}
-
-/* 日付ナビ */
+/* 上部日付ナビ（横スクロール） */
 #dayNav {
   position: sticky;
   top: 0;
   background: rgba(25, 118, 210, 0.95);
   display: flex;
-  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
   padding: 8px;
   z-index: 100;
 }
@@ -68,17 +63,44 @@ body.locked {
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+  flex-shrink: 0;
 }
 #dayNav button.active {
   background: #ff9800;
   color: white;
 }
 
-/* 予定カード */
-.dayContent {
+/* 下部固定タブ */
+#bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+#bottomNav button {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  background: white;
+  cursor: pointer;
+}
+#bottomNav button.active {
+  background: #1976d2;
+  color: white;
+}
+
+/* 各ページ */
+.dayContent, .extraContent {
   display: none;
   padding: 10px;
+  margin-bottom: 50px; /* 下部ナビ分の余白 */
 }
+
+/* カード */
 .card {
   background: white;
   margin-bottom: 10px;
@@ -96,7 +118,7 @@ body.locked {
   font-size: 14px;
 }
 
-/* 詳細モーダル */
+/* モーダル */
 #detailModal {
   display: none;
   position: fixed;
@@ -142,62 +164,53 @@ body.locked {
 
 <!-- しおり画面 -->
 <div id="shiori">
+  <!-- 上部日付タブ -->
   <div id="dayNav">
-    <button onclick="showDay(1)" class="active">1日目</button>
-    <button onclick="showDay(2)">2日目</button>
-    <button onclick="showDay(3)">3日目</button>
+    <button onclick="showDay(1)" class="active">9/12</button>
+    <button onclick="showDay(2)">9/13</button>
+    <button onclick="showDay(3)">9/14</button>
+    <button onclick="showDay(4)">9/15</button>
+    <button onclick="showDay(5)">9/16</button>
+    <button onclick="showDay(6)">9/17</button>
+    <button onclick="showDay(7)">9/18</button>
+    <button onclick="showDay(8)">9/19</button>
+    <button onclick="showDay(9)">9/20</button>
+    <button onclick="showDay(10)">9/21</button>
+    <button onclick="showDay(11)">9/22</button>
   </div>
 
-  <!-- 1日目 -->
+  <!-- 各日付ページ -->
   <div id="day1" class="dayContent" style="display:block;">
-    <div class="card" onclick="showDetail(
-      '東京駅 出発', 
-      '09:00 新幹線で東京から出発', 
-      'https://upload.wikimedia.org/wikipedia/commons/1/12/Tokyo_Station_2019.jpg', 
-      'https://maps.google.com/?q=東京駅'
-    )">
-      <h3>東京駅 出発</h3>
-      <p>09:00 新幹線で東京から出発</p>
-    </div>
-    <div class="card" onclick="showDetail(
-      '浅草観光', 
-      '浅草寺・仲見世通りを散策', 
-      'https://upload.wikimedia.org/wikipedia/commons/0/00/Sensoji_Temple_and_the_Nakamise_Shopping_Street_in_Asakusa%2C_Tokyo.jpg', 
-      'https://maps.google.com/?q=浅草寺'
-    )">
-      <h3>浅草観光</h3>
-      <p>10:30 浅草寺・仲見世通りを散策</p>
+    <div class="card" onclick="showDetail('1日目スポット', '詳細説明', '', '#')">
+      <h3>1日目スポット</h3>
+      <p>行程内容</p>
     </div>
   </div>
+  <div id="day2" class="dayContent"><p>2日目の予定</p></div>
+  <div id="day3" class="dayContent"><p>3日目の予定</p></div>
+  <div id="day4" class="dayContent"><p>4日目の予定</p></div>
+  <div id="day5" class="dayContent"><p>5日目の予定</p></div>
+  <div id="day6" class="dayContent"><p>6日目の予定</p></div>
+  <div id="day7" class="dayContent"><p>7日目の予定</p></div>
+  <div id="day8" class="dayContent"><p>8日目の予定</p></div>
+  <div id="day9" class="dayContent"><p>9日目の予定</p></div>
+  <div id="day10" class="dayContent"><p>10日目の予定</p></div>
+  <div id="day11" class="dayContent"><p>11日目の予定</p></div>
 
-  <!-- 2日目 -->
-  <div id="day2" class="dayContent">
-    <div class="card" onclick="showDetail(
-      '上野動物園', 
-      'パンダを見学', 
-      'https://upload.wikimedia.org/wikipedia/commons/6/6b/Giant_Panda_at_Ueno_Zoo.JPG', 
-      'https://maps.google.com/?q=上野動物園'
-    )">
-      <h3>上野動物園</h3>
-      <p>10:00 パンダを見学</p>
-    </div>
-  </div>
-
-  <!-- 3日目 -->
-  <div id="day3" class="dayContent">
-    <div class="card" onclick="showDetail(
-      '皇居外苑', 
-      '美しい庭園と二重橋を散策', 
-      'https://upload.wikimedia.org/wikipedia/commons/3/36/Nijubashi_Bridge_and_Imperial_Palace_Tokyo01s5s3200.jpg', 
-      'https://maps.google.com/?q=皇居外苑'
-    )">
-      <h3>皇居外苑</h3>
-      <p>09:00 散策と記念撮影</p>
-    </div>
-  </div>
+  <!-- 下部固定タブのページ -->
+  <div id="schedulePage" class="extraContent"><h3>全日程</h3><p>旅程表など</p></div>
+  <div id="budgetPage" class="extraContent"><h3>予算</h3><p>費用一覧</p></div>
+  <div id="albumPage" class="extraContent"><h3>アルバム</h3><p>写真ギャラリー</p></div>
 </div>
 
-<!-- 詳細モーダル -->
+<!-- 下部固定タブ -->
+<div id="bottomNav">
+  <button onclick="showExtra('schedulePage')">日程</button>
+  <button onclick="showExtra('budgetPage')">予算</button>
+  <button onclick="showExtra('albumPage')">アルバム</button>
+</div>
+
+<!-- モーダル -->
 <div id="detailModal" onclick="closeDetail(event)">
   <div id="detailModalContent">
     <button class="closeBtn" onclick="closeDetail(event)">閉じる</button>
@@ -222,15 +235,23 @@ function checkPassword() {
 
 function showDay(day) {
   document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
+  document.querySelectorAll(".extraContent").forEach(div => div.style.display = "none");
   document.getElementById("day" + day).style.display = "block";
   document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
   document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
 }
 
+function showExtra(pageId) {
+  document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
+  document.querySelectorAll(".extraContent").forEach(div => div.style.display = "none");
+  document.getElementById(pageId).style.display = "block";
+  document.querySelectorAll("#bottomNav button").forEach(btn => btn.classList.remove("active"));
+  document.querySelector(`#bottomNav button[onclick*="${pageId}"]`).classList.add("active");
+}
+
 function showDetail(title, text, image, mapUrl) {
   document.getElementById("detailTitle").textContent = title;
   document.getElementById("detailText").textContent = text;
-  
   const imgEl = document.getElementById("detailImage");
   if (image) {
     imgEl.src = image;
@@ -238,7 +259,6 @@ function showDetail(title, text, image, mapUrl) {
   } else {
     imgEl.style.display = "none";
   }
-
   document.getElementById("detailMap").href = mapUrl;
   document.getElementById("detailModal").style.display = "block";
 }
@@ -249,6 +269,6 @@ function closeDetail(e) {
   }
 }
 </script>
-
 </body>
 </html>
+
