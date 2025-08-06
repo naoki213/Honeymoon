@@ -96,7 +96,16 @@ body.locked {
   display: none;
 }
 
-/* カード */
+/* 1日目専用背景 */
+#day1 {
+  background-image: url('https://imgcp.aacdn.jp/img-a/1200/900/aa/gm/article/4/5/4/1/9/3/topimg_original.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 15px;
+}
+
+/* 通常カード */
 .card {
   background: white;
   margin-bottom: 15px;
@@ -111,6 +120,12 @@ body.locked {
 .card p {
   margin: 5px 0;
   font-size: 14px;
+}
+
+/* 1日目の半透明カード */
+#day1 .card {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
 
 /* タップ可能カード */
@@ -163,8 +178,8 @@ body.locked {
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
-  max-height: 90vh;       /* 高さ制限 */
-  overflow-y: auto;       /* スクロール可能 */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 #detailModalContent img {
   width: 100%;
