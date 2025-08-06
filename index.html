@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅のしおり</title>
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+}
+body.locked {
+  /* 高解像度コロッセオ背景 */
+  background-image: url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&q=80&w=2400');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* パスワード画面 */
+#passwordScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  backdrop-filter: blur(4px);
+}
+#passwordScreen input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
+}
+#passwordScreen button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* しおり画面 */
+#shiori {
+  display: none;
+}
+
+/* 日付ナビ */
+#dayNav {
+  position: sticky;
+  top: 0;
+  background: rgba(25, 118, 210, 0.95);
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  z-index: 100;
+}
+#dayNav button {
+  margin: 0 5px;
+  padding: 8px 12px;
+  background: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#dayNav button.active {
+  background: #ff9800;
+  color: white;
+}
+
+/* 予定カード */
+.dayContent {
+  display: none;
+  padding: 10px;
+}
+.card {
+  background: white;
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+.card h3 {
+  margin-top: 0;
+  color: #1976d2;
+}
+.card p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* 詳細モーダル */
+#detailModal {
+  display: none;
+  position: fixed;
+  z-index: 200;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+#detailModalContent {
+  background: white;
+  margin: 10% auto;
+  padding: 15px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+#detailModalContent img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  object-fit: cover;
+}
+.closeBtn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+}
+</style>
+</head>
+<body class="locked">
+
+<!-- パスワード画面 -->
+<div id="passwordScreen">
+  <input type="password" id="passwordInput" placeholder="パスワードを入力">
+  <button onclick="checkPassword()">開く</button>
+</div>
+
+<!-- しおり画面 -->
+<div id="shiori">
+  <div id="dayNav">
+    <button onclick="showDay(1)" class="active">1日目</button>
+    <button onclick="showDay(2)">2日目</button>
+    <button onclick="showDay(3)">3日目</button>
+  </div>
+
+  <!-- 1日目 -->
+  <div id="day1" class="dayContent" style="display:block;">
+    <div class="card" onclick="showDetail(
+      '東京駅 出発', 
+      '09:00 新幹線で東京から出発', 
+      'https://upload.wikimedia.org/wikipedia/commons/1/12/Tokyo_Station_2019.jpg', 
+      'https://maps.google.com/?q=東京駅'
+    )">
+      <h3>東京駅 出発</h3>
+      <p>09:00 新幹線で東京から出発</p>
+    </div>
+    <div class="card" onclick="showDetail(
+      '浅草観光', 
+      '浅草寺・仲見世通りを散策', 
+      'https://upload.wikimedia.org/wikipedia/commons/0/00/Sensoji_Temple_and_the_Nakamise_Shopping_Street_in_Asakusa%2C_Tokyo.jpg', 
+      'https://maps.google.com/?q=浅草寺'
+    )">
+      <h3>浅草観光</h3>
+      <p>10:30 浅草寺・仲見世通りを散策</p>
+    </div>
+  </div>
+
+  <!-- 2日目 -->
+  <div id="day2" class="dayContent">
+    <div class="card" onclick="showDetail(
+      '上野動物園', 
+      'パンダを見学', 
+      'https://upload.wikimedia.org/wikipedia/commons/6/6b/Giant_Panda_at_Ueno_Zoo.JPG', 
+      'https://maps.google.com/?q=上野動物園'
+    )">
+      <h3>上野動物園</h3>
+      <p>10:00 パンダを見学</p>
+    </div>
+  </div>
+
+  <!-- 3日目 -->
+  <div id="day3" class="dayContent">
+    <div class="card" onclick="showDetail(
+      '皇居外苑', 
+      '美しい庭園と二重橋を散策', 
+      'https://upload.wikimedia.org/wikipedia/commons/3/36/Nijubashi_Bridge_and_Imperial_Palace_Tokyo01s5s3200.jpg', 
+      'https://maps.google.com/?q=皇居外苑'
+    )">
+      <h3>皇居外苑</h3>
+      <p>09:00 散策と記念撮影</p>
+    </div>
+  </div>
+</div>
+
+<!-- 詳細モーダル -->
+<div id="detailModal" onclick="closeDetail(event)">
+  <div id="detailModalContent">
+    <button class="closeBtn" onclick="closeDetail(event)">閉じる</button>
+    <h3 id="detailTitle"></h3>
+    <img id="detailImage" src="" alt="">
+    <p id="detailText"></p>
+    <a id="detailMap" href="#" target="_blank">📍 Googleマップで開く</a>
+  </div>
+</div>
+
+<script>
+function checkPassword() {
+  const pass = document.getElementById("passwordInput").value;
+  if (pass === "0616") {
+    document.getElementById("passwordScreen").style.display = "none";
+    document.getElementById("shiori").style.display = "block";
+    document.body.classList.remove("locked");
+  } else {
+    alert("パスワードが違います");
+  }
+}
+
+function showDay(day) {
+  document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
+  document.getElementById("day" + day).style.display = "block";
+  document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
+  document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
+}
+
+function showDetail(title, text, image, mapUrl) {
+  document.getElementById("detailTitle").textContent = title;
+  document.getElementById("detailText").textContent = text;
+  
+  const imgEl = document.getElementById("detailImage");
+  if (image) {
+    imgEl.src = image;
+    imgEl.style.display = "block";
+  } else {
+    imgEl.style.display = "none";
+  }
+
+  document.getElementById("detailMap").href = mapUrl;
+  document.getElementById("detailModal").style.display = "block";
+}
+
+function closeDetail(e) {
+  if (e.target.id === "detailModal" || e.target.classList.contains("closeBtn")) {
+    document.getElementById("detailModal").style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
