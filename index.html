@@ -99,6 +99,7 @@ body.locked {
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
 .card h3 {
   margin-top: 0;
@@ -107,13 +108,6 @@ body.locked {
 .card p {
   margin: 5px 0;
   font-size: 14px;
-}
-.card ul {
-  padding-left: 20px;
-}
-.card a {
-  text-decoration: none;
-  color: #1976d2;
 }
 
 /* 下部ナビ（②③④） */
@@ -137,6 +131,45 @@ body.locked {
 #bottomNav button.active {
   background: #1976d2;
   color: white;
+}
+
+/* モーダル */
+#detailModal {
+  display: none;
+  position: fixed;
+  z-index: 200;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+#detailModalContent {
+  background: white;
+  margin: 10% auto;
+  padding: 15px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+#detailModalContent img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  object-fit: cover;
+}
+.closeBtn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+}
+#detailText a {
+  color: #1976d2;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -175,48 +208,56 @@ body.locked {
 
   <div id="page-schedule" class="page">
 
-    <!-- 一日目 -->
+    <!-- 1日目 -->
     <div id="day1" class="dayContent" style="display:block;">
 
-      <div class="card">
+      <div class="card" onclick="showDetail('15:30 出発','自宅を出発！新婚旅行の始まりです✨','','')">
         <h3>15:30 出発</h3>
-        <p>自宅を出発！新婚旅行の始まりです✨</p>
+        <p>自宅を出発！</p>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="showDetail('19:05 関空 → 仁川','フライトで韓国・仁川へ✈️ 21:00着予定。','','')">
         <h3>19:05 関空 → 仁川</h3>
-        <p>フライトで韓国・仁川へ✈️</p>
-        <p>到着予定：21:00</p>
+        <p>21:00 到着予定</p>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="showDetail(
+        '21:00 仁川空港到着',
+        '入国後、空港周辺で夜ご飯。<br><br><strong>おすすめ3店舗</strong><ul>' +
+        '<li><a href=\'https://goo.gl/maps/6aYtP7hXoUHh1qDGA\' target=\'_blank\'>百済参鶏湯</a> - 滋養強壮の参鶏湯</li>' +
+        '<li><a href=\'https://goo.gl/maps/pM7Dsv6wQbQHAF1L8\' target=\'_blank\'>カルビタン</a> - 牛カルビスープ</li>' +
+        '<li><a href=\'https://goo.gl/maps/Qctmym3dgA3bqT3P9\' target=\'_blank\'>キムチチゲ</a> - 韓国定番鍋</li>' +
+        '</ul>',
+        '',
+        ''
+      )">
         <h3>21:00 仁川空港到着</h3>
-        <p>入国手続きを済ませたら夜ご飯へ。</p>
-        <h4>おすすめ夜ご飯 🍽</h4>
-        <ul>
-          <li><strong>百済参鶏湯</strong> - 滋養強壮の韓国風参鶏湯</li>
-          <li><strong>カルビタン</strong> - 牛カルビのあっさりスープ</li>
-          <li><strong>キムチチゲ</strong> - ピリ辛で温まる韓国定番鍋</li>
-        </ul>
+        <p>空港で夜ご飯</p>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="showDetail(
+        '22:00 ホテルチェックイン',
+        'ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）<br><a href=\'https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z\' target=\'_blank\'>📍 Googleマップで開く</a>',
+        '',
+        ''
+      )">
         <h3>22:00 ホテルチェックイン</h3>
         <p>ホテルビュー仁川エアポート</p>
-        <p>無料バスあり（21:36 / 21:56 発）</p>
-        <a href="https://maps.google.com/?q=호텔뷰인천에어포트" target="_blank">
-          📍 Googleマップで開く
-        </a>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="showDetail(
+        '23:00 夜の自由時間',
+        'パラダイスシティ（Paradise City）でカジノ体験！？<br><a href=\'https://goo.gl/maps/h8f5TjzEom82\' target=\'_blank\'>📍 Googleマップで開く</a>',
+        '',
+        ''
+      )">
         <h3>23:00 夜の自由時間</h3>
-        <p>なおきはカジノ！？🎰</p>
+        <p>なおきはカジノ！？</p>
       </div>
 
     </div>
 
-    <!-- 2日目以降（仮） -->
+    <!-- 2日目以降はダミー -->
     <div id="day2" class="dayContent"><p>2日目の予定</p></div>
     <div id="day3" class="dayContent"><p>3日目の予定</p></div>
     <div id="day4" class="dayContent"><p>4日目の予定</p></div>
@@ -248,13 +289,24 @@ body.locked {
   </div>
 </div>
 
+<!-- 詳細モーダル -->
+<div id="detailModal" onclick="closeDetail(event)">
+  <div id="detailModalContent">
+    <button class="closeBtn" onclick="closeDetail(event)">閉じる</button>
+    <h3 id="detailTitle"></h3>
+    <img id="detailImage" src="" alt="">
+    <p id="detailText"></p>
+    <a id="detailMap" href="#" target="_blank" style="display:none;">📍 Googleマップで開く</a>
+  </div>
+</div>
+
 <script>
 function checkPassword() {
   const pass = document.getElementById("passwordInput").value;
   if (pass === "0616") {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("appContent").style.display = "block";
-    showPage('schedule'); // 初期表示は日程ページ
+    showPage('schedule');
     document.body.classList.remove("locked");
   } else {
     alert("パスワードが違います");
@@ -262,15 +314,10 @@ function checkPassword() {
 }
 
 function showPage(page) {
-  // ページ切り替え
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
   document.getElementById(`page-${page}`).style.display = "block";
-
-  // 下部ナビのアクティブ切り替え
   document.querySelectorAll("#bottomNav button").forEach(btn => btn.classList.remove("active"));
   document.querySelector(`#bottomNav button[onclick*="${page}"]`).classList.add("active");
-
-  // 日付ナビ表示/非表示
   document.getElementById("dayNav").style.display = (page === 'schedule') ? 'flex' : 'none';
 }
 
@@ -279,6 +326,31 @@ function showDay(day) {
   document.getElementById("day" + day).style.display = "block";
   document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
   document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
+}
+
+function showDetail(title, text, image, mapUrl) {
+  document.getElementById("detailTitle").textContent = title;
+  document.getElementById("detailText").innerHTML = text;
+  const imgEl = document.getElementById("detailImage");
+  if (image) {
+    imgEl.src = image;
+    imgEl.style.display = "block";
+  } else {
+    imgEl.style.display = "none";
+  }
+  if (mapUrl) {
+    document.getElementById("detailMap").href = mapUrl;
+    document.getElementById("detailMap").style.display = "inline-block";
+  } else {
+    document.getElementById("detailMap").style.display = "none";
+  }
+  document.getElementById("detailModal").style.display = "block";
+}
+
+function closeDetail(e) {
+  if (e.target.id === "detailModal" || e.target.classList.contains("closeBtn")) {
+    document.getElementById("detailModal").style.display = "none";
+  }
 }
 </script>
 </body>
