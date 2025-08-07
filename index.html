@@ -378,21 +378,37 @@ body.locked {
     <p>Hotel La Ville</p>
   </div>
 
-  <!-- 夜ご飯（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '22:00 ホテル近くで夜ご飯',
-    `<p>予算50ユーロでおすすめレストラン</p>
-    <ul>
-      <li>1. Osteria da Fortunata – 手打ちパスタが絶品</li>
-      <li>2. Armando al Pantheon – ローマ伝統料理</li>
-      <li>3. Trattoria Vecchia Roma – カルボナーラが有名</li>
-    </ul>`,
-    '',
-    ''
-  )">
-    <h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
-    <p>近くのレストランでディナー</p>
-  </div>
+  <!-- 夜ご飯（タップ）／詳細モーダル付き -->
+<div class="card tappable" onclick="showDetail(
+  '22:00 夜ご飯 — ローマのおすすめレストラン',
+  `
+  <div style="text-align:center;"><img src="https://via.placeholder.com/350x200?text=Restaurant+Image" alt="レストランイメージ" style="width:100%;height:auto;border-radius:6px;margin-bottom:10px;"></div>
+  <strong>予算:</strong> 約50 ユーロ /人<br><br>
+  
+  <strong>おすすめスポット：</strong><br>
+  <ul>
+    <li><strong>Osteria da Fortunata</strong><br>
+        <em>手打ちパスタが名物。伝統の味と温かい雰囲気。</em><br>
+        <strong>住所:</strong> Via del Pellegrino 11/12, Rome :contentReference[oaicite:1]{index=1}<br>
+        11:30～翌1:00まで営業 :contentReference[oaicite:2]{index=2}<br>
+        手頃な価格で郷土の味が楽しめる名店です。</li>
+    <li><strong>Armando al Pantheon</strong><br>
+        <em>パンテオン近く、クラシックなローマ料理を家族的な雰囲気で。</em><br>
+        <strong>住所:</strong> Salita de’ Crescenzi 31, Rome :contentReference[oaicite:3]{index=3}<br>
+        営業時間: 12:30–15:00, 19:00–23:00（日曜休業） :contentReference[oaicite:4]{index=4}<br>
+        人気店なので予約推奨です :contentReference[oaicite:5]{index=5}</li>
+    <li><strong>Trattoria Vecchia Roma</strong><br>
+        <em>地元で愛される家庭的なトラットリア。クラシックローマ料理満載。</em><br>
+        <strong>住所:</strong> Via Ferruccio 12B, Rome :contentReference[oaicite:6]{index=6}<br>
+        昼 12:30–15:00、夜 19:00–23:00営業 :contentReference[oaicite:7]{index=7}</li>
+  </ul>
+  `,
+  '',
+  ''
+)"><h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
+  <p>ローマ中心部／おすすめイタリアン３選</p>
+</div>
+
 
 </div>
 
