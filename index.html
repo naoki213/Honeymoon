@@ -548,6 +548,24 @@ function closeDetail(e) {
   }
 }
 </script>
+<script>
+window.checkPassword = function () {
+  if (document.getElementById("passwordInput").value === "0616") {
+    document.getElementById("passwordScreen").style.display = "none";
+    document.getElementById("appContent").style.display = "block";
+    showPage('schedule');
+    showDay(1);
+    document.body.classList.remove("locked");
+  } else {
+    alert("パスワードが違います");
+  }
+};
+
+window.showPage = function (page) { /* 既存中身そのまま */ };
+window.showDay = function (day) { /* 既存中身そのまま */ };
+window.showDetail = function (title, text, image, mapUrl) { /* 既存中身そのまま */ };
+window.closeDetail = function (e) { /* 既存中身そのまま */ };
+</script>
 
 <!-- Firebase compat -->
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
