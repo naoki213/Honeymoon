@@ -434,8 +434,41 @@ body.locked {
     <div id="day11" class="dayContent"></div>
   </div>
 
-  <!-- 予算ページ -->
-  <div id="page-budget" class="page"><p>予算ページ（作成予定）</p></div>
+ <!-- 予算ページ -->
+<div id="page-budget" class="page">
+  <p>予算</p>
+
+  <!-- 入力フォーム -->
+  <div>
+    <label for="date">日付:</label>
+    <input type="date" id="date"><br>
+
+    <label for="category">カテゴリー:</label>
+    <select id="category">
+      <option value="宿泊費">宿泊費</option>
+      <option value="交通費">交通費</option>
+      <option value="食費">食費</option>
+      <option value="観光代">観光代</option>
+      <option value="土産代">土産代</option>
+      <option value="その他">その他</option>
+    </select><br>
+
+    <label for="amount">金額:</label>
+    <input type="number" id="amount"><br>
+
+    <label for="currency">通貨:</label>
+    <select id="currency">
+      <option value="JPY">日本円</option>
+      <option value="EUR">ユーロ</option>
+    </select><br>
+
+    <label for="details">詳細:</label>
+    <input type="text" id="details"><br>
+
+    <button onclick="saveData()">保存</button>
+  </div>
+</div>
+
 
   <!-- アルバムページ -->
   <div id="page-album" class="page"><p>アルバムページ（作成予定）</p></div>
