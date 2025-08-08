@@ -14,9 +14,6 @@
 <!-- PWA対応（Androidや将来の拡張用） -->
 <link rel="manifest" href="manifest.json">
 
-<!-- Firebase SDKの読み込み -->
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 
   
 <style>
@@ -490,8 +487,7 @@ body.locked {
   </div>
 </div>
 
-<!-- app.jsをリンク -->
-  <script src="app.js"></script> <!-- ここでapp.jsを読み込む -->
+
 
 <!-- 詳細モーダル -->
 <div id="detailModal" onclick="closeDetail(event)">
@@ -552,53 +548,7 @@ function closeDetail(e) {
   }
 }
 
-    // Firebaseの設定情報（あなたのプロジェクトの情報）
-    const firebaseConfig = {
-      apiKey: "AIzaSyCUYkJKinAJkIU8q_PNlsYdtYqfZjItZ4g",
-      authDomain: "honeymoon-f477f.firebaseapp.com",
-      databaseURL: "https://honeymoon-f477f-default-rtdb.firebaseio.com",
-      projectId: "honeymoon-f477f",
-      storageBucket: "honeymoon-f477f.firebasestorage.app",
-      messagingSenderId: "839059715748",
-      appId: "1:839059715748:web:bff5ad12e909e331d71831",
-      measurementId: "G-GHRK9KE4KX"
-    };
-
-    // Firebaseの初期化
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database(app);
-
-    // データ保存関数
-    function saveData() {
-      const date = document.getElementById("date").value;
-      const category = document.getElementById("category").value;
-      const amount = parseFloat(document.getElementById("amount").value);
-      const currency = document.getElementById("currency").value;
-      const details = document.getElementById("details").value;
-
-      // ユーロの場合、円に換算（105%のレート）
-      let amountInJPY = amount;
-      if (currency === "EUR") {
-        amountInJPY = amount * 1.05;
-      }
-
-      // データを保存
-      const expensesRef = database.ref('expenses').push();
-      expensesRef.set({
-        date: date,
-        category: category,
-        amount: amountInJPY,
-        currency: currency,
-        details: details
-      }).then(() => {
-        alert("データが保存されました！");
-      }).catch((error) => {
-        alert("エラーが発生しました: " + error.message);
-      });
-    }
-
-
-
+   
 </script>
 </body>
 </html>
