@@ -1,116 +1,561 @@
-// app.js
+// ====== 設定 ======
+const TRIP_YEAR = 2025;
+const BUDGET_JPY = 800000;
+const STORAGE_KEY = "trip-budget-records-v1";
+const DELETED_KEY = "trip-budget-deleted-ids"; // 削除IDキュー（双方向同期用）
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+const CATEGORIES = ["宿泊費","交通費","食費","観光代","土産代","その他"];
+
+// 円グラフ配色（視認性重視）
+const COLORS = [
+  "#ff4d4d", // 赤
+  "#4d79ff", // 青
+  "#4dff4d", // 緑
+  "#ffb84d", // オレンジ
+  "#b84dff", // 紫
+  "#ffd24d"  // 黄
+];
+
+// ====== ユーティリティ ======
+const qs  = (s, el=document) => el.querySelector(s);
+const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+const fmtJPY = (n) => (Math.round(n)||0).toLocaleString("ja-JP");
+
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch { return []; }
+}
+function saveRecords(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function loadDeletedIds(){
+  try { return JSON.parse(localStorage.getItem(DELETED_KEY) || "[]"); }
+  catch { return []; }
+}
+function saveDeletedIds(arr){
+  localStorage.setItem(DELETED_KEY, JSON.stringify(arr));
+}
+
+// 9/12〜9/22の配列
+function buildFixedDates() {
+  const dates = [];
+  const start = new Date(TRIP_YEAR, 8, 12); // 8 = 9月
+  const end   = new Date(TRIP_YEAR, 8, 22);
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+    const y = d.getFullYear();
+    const m = d.getMonth()+1;
+    const day = d.getDate();
+    const label = `${m}/${day}`;
+    const iso = `${y}-${String(m).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    dates.push({ label, iso });
+  }
+  return dates;
+}
+
+// ====== 状態 ======
+let state = {
+  selectedDate: null,
+  selectedType: null,
+  records: loadRecords(),
+  chart: null,
 };
 
-// Firebaseの初期化
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database(app);
+// ====== 初期化 ======
+document.addEventListener("DOMContentLoaded", () => {
+  renderDateTabs();
+  renderTypeButtons();
+  initRate();
+  attachEvents();
+  initCloudButtons(); // クラウドボタン
+  loadGapiAndGis();   // Google SDK
+  syncUI();
+});
 
-// グラフの初期設定
-let budgetChart = null;
-
-// データ保存関数
-function saveData() {
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const currency = document.getElementById("currency").value;
-  const details = document.getElementById("details").value;
-
-  // ユーロの場合、円に換算（105%のレート）
-  let amountInJPY = amount;
-  if (currency === "EUR") {
-    amountInJPY = amount * 1.05;
-  }
-
-  // データを保存
-  const expensesRef = database.ref('expenses').push();
-  expensesRef.set({
-    date: date,
-    category: category,
-    amount: amountInJPY,
-    currency: currency,
-    details: details
-  }).then(() => {
-    alert("データが保存されました！");
-    loadBudgetData(); // データ保存後にグラフを更新
-  }).catch((error) => {
-    alert("エラーが発生しました: " + error.message);
+// ====== UI構築 ======
+function renderDateTabs() {
+  const wrap = qs("#dateTabs");
+  wrap.innerHTML = "";
+  const dates = buildFixedDates();
+  dates.forEach((d, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pill";
+    btn.textContent = d.label;
+    btn.setAttribute("data-iso", d.iso);
+    btn.addEventListener("click", () => {
+      state.selectedDate = d.iso;
+      highlightDateTab(d.iso);
+    });
+    wrap.appendChild(btn);
+    if (i === 0) state.selectedDate = d.iso;
+  });
+  highlightDateTab(state.selectedDate);
+}
+function highlightDateTab(iso) {
+  qsa("#dateTabs .pill").forEach(b => {
+    b.classList.toggle("active", b.getAttribute("data-iso") === iso);
   });
 }
 
-// Firebaseからデータを取得してグラフを描画
-function loadBudgetData() {
-  const expensesRef = database.ref('expenses');
-  expensesRef.once('value', function(snapshot) {
-    const data = snapshot.val();
-    const categories = {};
-    let totalAmount = 0;
+function renderTypeButtons() {
+  const wrap = qs("#typeButtons");
+  wrap.innerHTML = "";
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pill";
+    btn.textContent = cat;
+    btn.addEventListener("click", () => {
+      state.selectedType = cat;
+      highlightType(cat);
+    });
+    wrap.appendChild(btn);
+  });
+}
+function highlightType(cat) {
+  qsa("#typeButtons .pill").forEach(b => {
+    b.classList.toggle("active", b.textContent === cat);
+  });
+}
 
-    // データをカテゴリーごとに集計
-    for (let id in data) {
-      const expense = data[id];
-      const category = expense.category;
-      const amount = expense.amount;
+function initRate() {
+  const eurRateInput = qs("#eurRateInput");
+  const eff = qs("#effectiveRate");
+  const updateEff = () => {
+    const base = parseFloat(eurRateInput.value || "0");
+    const effVal = base * 1.022; // 指定倍率
+    eff.textContent = isFinite(effVal) ? effVal.toFixed(2) : "0";
+    const eur = parseFloat(qs("#amountEUR").value || "0");
+    if (eur > 0) qs("#amountJPY").value = Math.round(eur * effVal);
+  };
+  eurRateInput.addEventListener("input", updateEff);
+  updateEff();
+}
 
-      if (!categories[category]) {
-        categories[category] = 0;
-      }
-      categories[category] += amount;
-      totalAmount += amount;
+// ====== 入出力 ======
+function attachEvents() {
+  qs("#amountEUR").addEventListener("input", () => {
+    const eur = parseFloat(qs("#amountEUR").value || "0");
+    const effVal = parseFloat(qs("#effectiveRate").textContent || "0");
+    if (eur > 0 && effVal > 0) {
+      qs("#amountJPY").value = Math.round(eur * effVal);
     }
+  });
+  qs("#saveBtn").addEventListener("click", onSave);
+}
 
-    // グラフデータの準備
-    const labels = Object.keys(categories);
-    const amounts = Object.values(categories);
+function toast(msg, ok=true){
+  const el = qs("#toast");
+  el.textContent = msg;
+  el.style.color = ok ? "#0a2a45" : "#b00020";
+  el.classList.add("show");
+  setTimeout(()=> el.classList.remove("show"), 1800);
+}
 
-    // グラフがすでに存在する場合は削除
-    if (budgetChart) {
-      budgetChart.destroy();
-    }
+// 保存
+function onSave() {
+  const date = state.selectedDate;
+  const type = state.selectedType;
+  const amountJPY = Math.round(parseFloat(qs("#amountJPY").value || "0"));
+  const amountEUR = parseFloat(qs("#amountEUR").value || "0");
+  const eurRate   = parseFloat(qs("#eurRateInput").value || "0");
+  const detail    = qs("#detail").value.trim();
 
-    // 新しいグラフを作成
-    const ctx = document.getElementById('budgetChart').getContext('2d');
-    budgetChart = new Chart(ctx, {
-      type: 'pie', // 円グラフ
-      data: {
-        labels: labels,
-        datasets: [{
-          data: amounts,
-          backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5'],
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ¥' + tooltipItem.raw.toLocaleString();
-              }
-            }
-          }
+  if (!date)  return toast("日付を選択してください", false);
+  if (!type)  return toast("種類を選択してください", false);
+  if (!amountJPY && !amountEUR) return toast("円またはユーロの金額を入力してください", false);
+
+  let finalJPY = amountJPY;
+  if (!finalJPY && amountEUR) {
+    const effVal = eurRate * 1.022;
+    finalJPY = Math.round(amountEUR * effVal);
+  }
+
+  const rec = {
+    id: crypto.randomUUID(),
+    date, type,
+    amountJPY: finalJPY,
+    amountEUR: amountEUR || null,
+    eurRate: eurRate || null,
+    eurMarkup: 1.022,
+    detail,
+    createdAt: Date.now()
+  };
+
+  state.records.unshift(rec);
+  saveRecords(state.records);
+
+  if (authed) {
+    appendRecordToSheet(rec)
+      .then(()=> cloudToast("Sheetsに保存しました"))
+      .catch(err=> cloudToast("Sheets保存失敗: " + err.message, false));
+  }
+
+  qs("#amountJPY").value = "";
+  qs("#amountEUR").value = "";
+  qs("#detail").value = "";
+  toast("保存しました");
+  syncUI();
+}
+
+// ====== 表示 ======
+function syncUI() {
+  renderList();
+  renderStatsAndChart();
+}
+
+function renderList() {
+  const list = qs("#recordList");
+  list.innerHTML = "";
+
+  if (!state.records.length) {
+    qs("#emptyState").style.display = "block";
+    return;
+  }
+  qs("#emptyState").style.display = "none";
+
+  state.records.forEach(rec => {
+    const li = document.createElement("li");
+    li.className = "record";
+    li.setAttribute("data-id", rec.id);
+
+    const date = document.createElement("div");
+    date.className = "date";
+    date.textContent = toDisplayDate(rec.date);
+
+    const mid = document.createElement("div");
+    const title = document.createElement("div");
+    title.innerHTML = `<strong>${rec.type}</strong> <span class="meta">${rec.detail || ""}</span>`;
+    mid.appendChild(title);
+
+    const amt = document.createElement("div");
+    amt.className = "amount";
+    amt.textContent = `${fmtJPY(rec.amountJPY)} 円`;
+
+    const del = document.createElement("button");
+    del.className = "del";
+    del.textContent = "削除";
+    del.addEventListener("click", async () => {
+      if (!confirm("この記録を削除しますか？")) return;
+
+      try {
+        // サインイン済みなら、上書き前にクラウド最新を取り込み（他端末追加分を温存）
+        if (authed) {
+          if (tokenClient) { try { tokenClient.requestAccessToken({ prompt: '' }); } catch {} }
+          await loadAllFromSheet(true);
         }
+
+        // ローカルから1件削除 + 削除IDをキューに追加
+        const deleted = loadDeletedIds();
+        deleted.push(rec.id);
+        saveDeletedIds([...new Set(deleted)]);
+
+        state.records = state.records.filter(r => r.id !== rec.id);
+        saveRecords(state.records);
+        syncUI();
+
+        // 双方向同期でクラウドにも反映
+        if (authed) {
+          await twoWaySync();
+          cloudToast("Sheetsからも削除しました");
+        }
+      } catch (err) {
+        cloudToast("削除同期失敗: " + (err.message || err), false);
+        console.error(err);
       }
     });
 
-    // 残りの予算表示
-    const remainingBudget = 800000 - totalAmount;
-    document.getElementById('remainingBudget').textContent = '残り予算: ¥' + remainingBudget.toLocaleString();
+    li.appendChild(date);
+    li.appendChild(mid);
+    li.appendChild(amt);
+    li.appendChild(del);
+    list.appendChild(li);
   });
 }
 
-// 初期ロード時に予算データを表示
-loadBudgetData();
+function toDisplayDate(iso){
+  const [y,m,d] = iso.split("-").map(Number);
+  return `${m}/${d}`;
+}
+
+function renderStatsAndChart() {
+  const sumByCat = Object.fromEntries(CATEGORIES.map(c => [c, 0]));
+  let total = 0;
+  state.records.forEach(r => {
+    sumByCat[r.type] += r.amountJPY;
+    total += r.amountJPY;
+  });
+  const remain = Math.max(0, BUDGET_JPY - total);
+
+  qs("#spentAmount").textContent = fmtJPY(total);
+  qs("#remainAmount").textContent = fmtJPY(remain);
+
+  const data = CATEGORIES.map(c => sumByCat[c]);
+  const ctx = qs("#pieChart").getContext("2d");
+
+  if (state.chart) {
+    state.chart.data.datasets[0].data = data;
+    state.chart.update();
+  } else {
+    state.chart = new Chart(ctx, {
+      type: "doughnut",
+      data: { labels: CATEGORIES, datasets: [{ data, backgroundColor: COLORS, borderWidth: 0 }] },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (item) => `${item.label}: ${fmtJPY(item.raw)} 円` } }
+        },
+        cutout: "62%"
+      }
+    });
+  }
+
+  const legend = qs("#chartLegend");
+  legend.innerHTML = "";
+  CATEGORIES.forEach((c, i) => {
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `<span class="dot" style="background:${COLORS[i]}"></span> ${c}：<strong>${fmtJPY(sumByCat[c])}</strong>円`;
+    legend.appendChild(item);
+  });
+}
+
+// ====== Google Sheets 連携 ======
+const GSHEETS = {
+  API_KEY: "AIzaSyCl16O5UWCsDdNB3o2M8m4osCj5TlatXX0",
+  CLIENT_ID: "217890720524-tgpuqqv60m8pv1t3evn17a15d52jsrki.apps.googleusercontent.com",
+  SPREADSHEET_ID: "11GyzKABbLvZ54uy7XfwwUPCNcoPMAn0PB_mzdxZ0tm4",
+  DISCOVERY_DOC: "https://sheets.googleapis.com/$discovery/rest?version=v4",
+  SCOPE: "https://www.googleapis.com/auth/spreadsheets"
+};
+let gapiInited = false;
+let gisInited = false;
+let tokenClient = null;
+let authed = false;
+let tokenRefreshTimer = null;
+
+function startTokenAutoRefresh(){
+  if (tokenRefreshTimer) clearInterval(tokenRefreshTimer);
+  tokenRefreshTimer = setInterval(() => {
+    if (!tokenClient || !authed) return;
+    try { tokenClient.requestAccessToken({ prompt: '' }); } catch {}
+  }, 45 * 60 * 1000);
+}
+function trySilentSignIn() {
+  if (!tokenClient || authed) return;
+  try { tokenClient.requestAccessToken({ prompt: '' }); } catch {}
+}
+
+function initCloudButtons(){
+  qs("#signinBtn").addEventListener("click", handleAuthClick);
+  qs("#signoutBtn").addEventListener("click", handleSignoutClick);
+  qs("#syncBtn").addEventListener("click", handleSyncClick);
+}
+function cloudToast(msg, ok=true){
+  const el = qs("#cloudToast");
+  el.textContent = msg;
+  el.style.color = ok ? "#0a2a45" : "#b00020";
+  el.classList.add("show");
+  setTimeout(()=> el.classList.remove("show"), 2200);
+}
+function setCloudButtons(){
+  qs("#signinBtn").disabled = !(gapiInited && gisInited) || authed;
+  qs("#signoutBtn").disabled = !authed;
+  qs("#syncBtn").disabled = !authed;
+}
+
+function loadGapiAndGis(){
+  const waitGapi = new Promise((res)=>{
+    const t = setInterval(()=>{
+      if (window.gapi && window.gapi.load) {
+        clearInterval(t);
+        gapi.load("client", async ()=>{
+          await gapi.client.init({ apiKey: GSHEETS.API_KEY, discoveryDocs: [GSHEETS.DISCOVERY_DOC] });
+          gapiInited = true; setCloudButtons(); res();
+        });
+      }
+    }, 100);
+  });
+  const waitGIS = new Promise((res)=>{
+    const t = setInterval(()=>{
+      if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+        clearInterval(t);
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: GSHEETS.CLIENT_ID,
+          scope: GSHEETS.SCOPE,
+          callback: (response) => {
+            if (response && response.access_token) {
+              authed = true;
+              setCloudButtons();
+              cloudToast("サインインしました");
+              startTokenAutoRefresh();
+              loadAllFromSheet(true).catch(err=> cloudToast("Sheets読込失敗: " + err.message, false));
+            }
+          },
+        });
+        gisInited = true; setCloudButtons(); res();
+      }
+    }, 100);
+  });
+
+  Promise.all([waitGapi, waitGIS]).then(()=>{
+    setCloudButtons();
+    trySilentSignIn(); // 起動時に静かに再認可
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') trySilentSignIn();
+    });
+  });
+}
+
+function handleAuthClick(){ if (tokenClient) tokenClient.requestAccessToken({ prompt: "consent" }); }
+function handleSignoutClick(){ authed = false; setCloudButtons(); cloudToast("サインアウトしました"); }
+
+// 今すぐ同期：双方向同期（マージ）
+async function handleSyncClick(){
+  try {
+    if (!authed) throw new Error("サインインしていません");
+    if (tokenClient) { try { tokenClient.requestAccessToken({ prompt: '' }); } catch {} }
+    await twoWaySync();
+    cloudToast("Sheetsと双方向同期しました");
+  } catch(e){
+    cloudToast("同期失敗: " + (e.message || e), false);
+    console.error(e);
+  }
+}
+
+// ====== 双方向同期ロジック ======
+async function twoWaySync() {
+  ensureAuthed();
+
+  // 1) Sheets全件取得（ローカル非破壊）
+  const sheetRecords = await fetchAllFromSheet();
+
+  // 2) 削除キュー適用（この端末で削除済IDは最優先で削除）
+  const deletedIds = new Set(loadDeletedIds());
+  const sheetAfterDelete = sheetRecords.filter(r => !deletedIds.has(r.id));
+
+  // 3) ローカルとマージ（idの和集合）／同一idは createdAt 新しい方
+  const mergedMap = new Map();
+  sheetAfterDelete.forEach(r => mergedMap.set(r.id, r));
+  state.records.forEach(r => {
+    const ex = mergedMap.get(r.id);
+    if (!ex || (r.createdAt || 0) > (ex.createdAt || 0)) mergedMap.set(r.id, r);
+  });
+
+  // 4) マージ結果を配列化・降順
+  const merged = Array.from(mergedMap.values()).sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+
+  // 5) Sheetsをマージ結果で上書き → ローカル更新 → 削除キュークリア
+  state.records = merged;
+  saveRecords(state.records);
+  await pushAllToSheet();
+  saveDeletedIds([]);
+  syncUI();
+}
+
+// ローカルを触らずSheets全件を配列で取得
+async function fetchAllFromSheet() {
+  ensureAuthed();
+  const res = await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A1:Z100000"
+  });
+  const rows = res.result.values || [];
+  if (!rows.length) return [];
+  let start = 0;
+  if (rows[0][0] === "id") start = 1;
+
+  return rows.slice(start).map(r => ({
+    id: r[0],
+    date: r[1],
+    type: r[2],
+    amountJPY: Number(r[3]||0),
+    amountEUR: r[4] ? Number(r[4]) : null,
+    eurRate:  r[5] ? Number(r[5]) : null,
+    eurMarkup:r[6] ? Number(r[6]) : null,
+    detail:   r[7] || "",
+    createdAt:r[8] ? Number(r[8]) : 0
+  })).filter(x => x.id);
+}
+
+// ====== Sheets I/O（上書き保存・読み込み・初期化） ======
+async function appendRecordToSheet(rec){
+  ensureAuthed();
+  const values = [[
+    rec.id, rec.date, rec.type, rec.amountJPY, rec.amountEUR ?? "",
+    rec.eurRate ?? "", rec.eurMarkup ?? "", rec.detail ?? "", rec.createdAt
+  ]];
+  return gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A1",
+    valueInputOption: "RAW",
+    insertDataOption: "INSERT_ROWS",
+    resource: { values }
+  });
+}
+
+async function loadAllFromSheet(replaceLocal=false){
+  ensureAuthed();
+  const res = await gapi.client.sheets.spreadsheets.values.get({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A1:Z100000"
+  });
+  const rows = res.result.values || [];
+  if (!rows.length) { await ensureHeaderRow(); return; }
+  let start = 0;
+  if (rows[0][0] === "id") start = 1;
+  const recs = rows.slice(start).map(r => ({
+    id: r[0], date: r[1], type: r[2],
+    amountJPY: Number(r[3]||0), amountEUR: r[4] ? Number(r[4]) : null,
+    eurRate: r[5] ? Number(r[5]) : null, eurMarkup: r[6] ? Number(r[6]) : null,
+    detail: r[7] || "", createdAt: r[8] ? Number(r[8]) : Date.now()
+  })).filter(x => x.id);
+
+  if (recs.length && replaceLocal) {
+    state.records = recs.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+    saveRecords(state.records);
+    syncUI();
+  } else if (!recs.length) {
+    await ensureHeaderRow();
+  }
+}
+
+async function pushAllToSheet(){
+  ensureAuthed();
+  await clearSheet();
+  await ensureHeaderRow();
+  if (!state.records.length) return;
+  const values = state.records.slice().reverse().map(rec => [
+    rec.id, rec.date, rec.type,
+    rec.amountJPY, rec.amountEUR ?? "",
+    rec.eurRate ?? "", rec.eurMarkup ?? "",
+    rec.detail ?? "", rec.createdAt
+  ]);
+  return gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A1",
+    valueInputOption: "RAW",
+    insertDataOption: "INSERT_ROWS",
+    resource: { values }
+  });
+}
+
+async function ensureHeaderRow(){
+  const header = [["id","date","type","amountJPY","amountEUR","eurRate","eurMarkup","detail","createdAt"]];
+  return gapi.client.sheets.spreadsheets.values.update({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A1:I1",
+    valueInputOption: "RAW",
+    resource: { values: header }
+  });
+}
+async function clearSheet(){
+  return gapi.client.sheets.spreadsheets.values.clear({
+    spreadsheetId: GSHEETS.SPREADSHEET_ID,
+    range: "Sheet1!A:Z"
+  });
+}
+
+function ensureAuthed(){ if (!authed) throw new Error("サインインしていません"); }
