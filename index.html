@@ -14,15 +14,9 @@
 <!-- PWA対応（Androidや将来の拡張用） -->
 <link rel="manifest" href="manifest.json">
 
-<!-- ▼ 追加：予算アプリのCSS と ライブラリ ▼ -->
-<link rel="stylesheet" href="style.css" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script async defer src="https://apis.google.com/js/api.js"></script>
-<script async defer src="https://accounts.google.com/gsi/client"></script>
-<!-- ▲ 追加ここまで ▲ -->
 
+  
 <style>
-/* しおり側の既存スタイル（そのまま） */
 body, html {
   margin: 0;
   padding: 0;
@@ -149,8 +143,15 @@ body.locked {
 }
 
 /* タップ可能カード */
-.tappable { cursor: pointer; }
-.detail-label { font-size: 14px; background: transparent; color: #ff9800; margin-left: 6px; }
+.tappable {
+  cursor: pointer;
+}
+.detail-label {
+  font-size: 14px;
+  background: transparent;
+  color: #ff9800;
+  margin-left: 6px;
+}
 
 /* 下部ナビ */
 #bottomNav {
@@ -211,7 +212,10 @@ body.locked {
   cursor: pointer;
   float: right;
 }
-#detailText a { color: #1976d2; text-decoration: none; }
+#detailText a {
+  color: #1976d2;
+  text-decoration: none;
+}
 </style>
 </head>
 <body class="locked">
@@ -247,7 +251,7 @@ body.locked {
     <button onclick="showDay(11)">9/22</button>
   </div>
 
-    <!-- 日程ページ -->
+  <!-- 日程ページ -->
   <div id="page-schedule" class="page">
 
     <!-- 1日目（例） -->
@@ -427,108 +431,13 @@ body.locked {
     <div id="day11" class="dayContent"></div>
   </div>
 
-
-  <!-- ▼▼ 予算ページ（家計簿統合） ▼▼ -->
+<!-- 予算ページ -->
   <div id="page-budget" class="page">
-    <header class="app-header">
-      <h1>旅行家計簿</h1>
-      <div class="sub">9/12–9/22 / 総予算 800,000円</div>
-    </header>
+    <p>予算</p>
 
-    <main class="container">
+     </div>
 
-      <!-- ① 入力 -->
-      <section class="card" id="input-area">
-        <h2>① 入力</h2>
 
-        <!-- 日付（固定ボタン 9/12–9/22） -->
-        <div class="block">
-          <label class="label">日付</label>
-          <div id="dateTabs" class="date-tabs"></div>
-        </div>
-
-        <!-- 種類（固定6種） -->
-        <div class="block">
-          <label class="label">種類</label>
-          <div id="typeButtons" class="type-buttons"></div>
-        </div>
-
-        <!-- レート設定 -->
-        <div class="block rate-row">
-          <div class="rate-col">
-            <label class="label">EUR→JPY レート（手入力）</label>
-            <input type="number" id="eurRateInput" inputmode="decimal" step="0.01" min="0" value="175" />
-            <div class="hint">ユーロ換算時は <strong>この値 × 1.022</strong> で円計上</div>
-          </div>
-          <div class="rate-col">
-            <div class="eff-rate">実効レート（×1.022）：<span id="effectiveRate">178.85</span> 円/€</div>
-          </div>
-        </div>
-
-        <!-- 金額 -->
-        <div class="block grid-2">
-          <div>
-            <label class="label">金額（円）</label>
-            <input type="number" id="amountJPY" inputmode="numeric" min="0" placeholder="例: 2400" />
-          </div>
-          <div>
-            <label class="label">金額（ユーロ）</label>
-            <input type="number" id="amountEUR" inputmode="decimal" step="0.01" min="0" placeholder="例: 12" />
-          </div>
-        </div>
-
-        <!-- 詳細 -->
-        <div class="block">
-          <label class="label">詳細（任意）</label>
-          <input type="text" id="detail" placeholder="例: パニーノ / バス切符 など" />
-        </div>
-
-        <!-- 保存 -->
-        <div class="actions">
-          <button id="saveBtn" class="btn-primary">保存</button>
-          <div id="toast" class="toast" role="status" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <!-- クラウド（Google Sheets） -->
-      <section class="card" id="cloud-area">
-        <h2>クラウド（Google Sheets）</h2>
-        <div class="actions">
-          <button id="signinBtn" class="btn-primary" disabled>Googleにサインイン</button>
-          <button id="signoutBtn" class="del" disabled>サインアウト</button>
-          <button id="syncBtn" class="btn-primary" disabled>今すぐ同期</button>
-        </div>
-        <div class="hint">同じGoogleアカウントでサインインすると、端末間で記録を共有できます。</div>
-        <div id="cloudToast" class="toast" role="status" aria-live="polite"></div>
-      </section>
-
-      <!-- ② グラフ -->
-      <section class="card" id="graph-area">
-        <h2>② グラフ</h2>
-        <div class="budget-row">
-          <div class="remain">残 <span id="remainAmount">800,000</span> 円</div>
-          <div class="spent">使った合計 <span id="spentAmount">0</span> 円</div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="pieChart" aria-label="カテゴリ別支出円グラフ" role="img"></canvas>
-        </div>
-        <div class="legend" id="chartLegend"></div>
-      </section>
-
-      <!-- ③ 記録 -->
-      <section class="card" id="list-area">
-        <h2>③ 記録</h2>
-        <div id="emptyState" class="empty">まだ記録がありません。</div>
-        <ul id="recordList" class="record-list"></ul>
-      </section>
-
-    </main>
-
-    <footer class="app-footer">
-      <small>ローカル保存 / GitHub Pagesで配信可</small>
-    </footer>
-  </div>
-  <!-- ▲▲ 予算ページここまで ▲▲ -->
 
   <!-- アルバムページ -->
   <div id="page-album" class="page"><p>アルバムページ（作成予定）</p></div>
@@ -540,6 +449,8 @@ body.locked {
     <button onclick="showPage('album')">アルバム</button>
   </div>
 </div>
+
+
 
 <!-- 詳細モーダル -->
 <div id="detailModal" onclick="closeDetail(event)">
@@ -566,16 +477,16 @@ function checkPassword() {
 }
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-  document.getElementById(`page-${page}`).style.display = "block";
+  document.getElementById(page-${page}).style.display = "block";
   document.querySelectorAll("#bottomNav button").forEach(btn => btn.classList.remove("active"));
-  document.querySelector(`#bottomNav button[onclick*="${page}"]`).classList.add("active");
+  document.querySelector(#bottomNav button[onclick*="${page}"]).classList.add("active");
   document.getElementById("dayNav").style.display = (page === 'schedule') ? 'flex' : 'none';
 }
 function showDay(day) {
   document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
   document.getElementById("day" + day).style.display = "block";
   document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
-  document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
+  document.querySelector(#dayNav button:nth-child(${day})).classList.add("active");
 }
 function showDetail(title, text, image, mapUrl) {
   document.getElementById("detailTitle").textContent = title;
@@ -599,10 +510,8 @@ function closeDetail(e) {
     document.getElementById("detailModal").style.display = "none";
   }
 }
-</script>
 
-<!-- ▼ 追加：予算アプリの本体JS（必ず一番最後に） ▼ -->
-<script src="app.js"></script>
-<!-- ▲ 追加ここまで ▲ -->
+   
+</script>
 </body>
 </html>
