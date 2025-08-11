@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ← 変更：viewport-fit=cover を追加 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Our Honeymoon Journey</title>
 
 <!-- iPhone用フルスクリーン設定 -->
@@ -15,6 +16,11 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
+:root{
+  /* ← 変更：下部ナビ高さを変数化（必要に応じて実寸に） */
+  --bottom-nav-h: 56px;
+}
+
 body, html {
   margin: 0;
   padding: 0;
@@ -45,61 +51,34 @@ body.locked {
   margin-bottom: 5px;
   font-family: 'Georgia', serif;
 }
-#titleBox p {
-  margin: 4px 0;
-}
-#passwordBox {
-  margin-top: 40px;
-}
+#titleBox p { margin: 4px 0; }
+#passwordBox { margin-top: 40px; }
 #passwordBox input {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  margin-bottom: 10px;
+  padding: 10px; font-size: 16px; border-radius: 6px; border: none; margin-bottom: 10px;
 }
 #passwordBox button {
-  background: #1976d2;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
+  background: #1976d2; color: white; border: none; padding: 10px 16px; font-size: 16px; border-radius: 6px; cursor: pointer;
 }
 
 /* 日付ナビ */
 #dayNav {
   display: none;
-  position: sticky;
-  top: 0;
+  position: sticky; top: 0;
   background: rgba(66, 165, 245, 0.95);
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 8px;
-  z-index: 100;
+  overflow-x: auto; white-space: nowrap;
+  padding: 8px; z-index: 100;
 }
 #dayNav button {
-  margin: 0 5px;
-  padding: 12px 16px;
-  font-size: 15px;
-  background: white;
-  border: none;
-  border-radius: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  flex-shrink: 0;
+  margin: 0 5px; padding: 12px 16px; font-size: 15px;
+  background: white; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; flex-shrink: 0;
 }
-#dayNav button.active {
-  background: #64b5f6;
-  color: white;
-}
+#dayNav button.active { background: #64b5f6; color: white; }
 
 /* ページ共通 */
 .page {
   display: none;
   padding: 15px;
-  margin-bottom: 60px;
+  margin-bottom: var(--bottom-nav-h); /* ← 変更：ナビ分の余白を確保 */
 }
 .dayContent {
   display: none;
@@ -126,91 +105,53 @@ body.locked {
 /* カード（半透明） */
 .card {
   background: rgba(255, 255, 255, 0.7);
-  margin-bottom: 15px;
-  padding: 14px;
-  border-radius: 10px;
+  margin-bottom: 15px; padding: 14px; border-radius: 10px;
   box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
-.card h3 {
-  margin-top: 0;
-  color: #1976d2;
-}
-.card p {
-  margin: 5px 0;
-  font-size: 14px;
-}
+.card h3 { margin-top: 0; color: #1976d2; }
+.card p { margin: 5px 0; font-size: 14px; }
 
 /* タップ可能カード */
 .tappable { cursor: pointer; }
-.detail-label {
-  font-size: 14px;
-  background: transparent;
-  color: #ff9800;
-  margin-left: 6px;
-}
+.detail-label { font-size: 14px; background: transparent; color: #ff9800; margin-left: 6px; }
 
-/* 下部ナビ */
+/* 下部ナビ（← 変更：高さとsafe-area対応） */
 #bottomNav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(227, 242, 253, 0.95);
-  display: flex;
-  border-top: 1px solid #bbdefb;
+  position: fixed; bottom: 0; left: 0; width: 100%;
+  background: rgba(227,242,253,0.95);
+  display: flex; border-top: 1px solid #bbdefb;
+  height: var(--bottom-nav-h);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 #bottomNav button {
-  flex: 1;
-  padding: 14px;
-  font-size: 15px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+  flex: 1; padding: 14px; font-size: 15px; border: none; background: transparent; cursor: pointer;
 }
-#bottomNav button.active {
-  background: #64b5f6;
-  color: white;
-}
+#bottomNav button.active { background: #64b5f6; color: white; }
 
 /* モーダル */
 #detailModal {
-  display: none;
-  position: fixed;
-  z-index: 200;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
+  display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.6);
 }
 #detailModalContent {
-  background: white;
-  margin: 5% auto;
-  padding: 15px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 90vh;
-  overflow-y: auto;
+  background: white; margin: 5% auto; padding: 15px; border-radius: 8px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto;
 }
 #detailModalContent img {
-  width: 100%;
-  height: auto;
-  max-height: 300px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  object-fit: cover;
+  width: 100%; height: auto; max-height: 300px; border-radius: 8px; margin-bottom: 8px; object-fit: cover;
 }
 .closeBtn {
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  float: right;
+  background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; float: right;
 }
-#detailText a {
-  color: #1976d2;
-  text-decoration: none;
+#detailText a { color: #1976d2; text-decoration: none; }
+
+/* ← 追加：予算ページは余白0、iframeを画面にフィット */
+#page-budget.page { padding: 0; }
+#page-budget iframe{
+  display: block;
+  width: 100%;
+  border: none;
+  height: calc(100dvh - var(--bottom-nav-h) - env(safe-area-inset-bottom)); /* 余白を消す本命 */
+  vertical-align: top;
 }
 </style>
 </head>
@@ -250,7 +191,7 @@ body.locked {
   <!-- 日程ページ -->
   <div id="page-schedule" class="page">
 
-    <!-- 1日目 -->
+    <!-- 1日目（シンプル版） -->
     <div id="day1" class="dayContent">
       <div class="card">
         <h3>15:30 出発</h3>
@@ -260,48 +201,42 @@ body.locked {
         <h3>19:05 関空 → 仁川</h3>
         <p>仁川国際空港へフライト（到着予定：21:00）。</p>
       </div>
-      <div class="card tappable" onclick="showDetail('22:00 ホテルチェックイン','ホテルビュー仁川エアポート。無料バスあり（21:36 / 21:56 発）。','','https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z')">
+      <div class="card tappable" onclick="showDetail('22:00 ホテルチェックイン','ホテルビュー仁川エアポート。無料バスあり（21:36 / 21:56 発）。','', 'https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z')">
         <h3>22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
         <p>ホテルビュー仁川エアポート</p>
       </div>
-      <div class="card tappable" onclick="showDetail('23:00 夜の自由時間 - パラダイスシティ','空港から車で約5分。アート展示、ホテル、カジノ、屋内遊園地、スパ、飲食・ショップが集まる大型複合施設。','','https://goo.gl/maps/h8f5TjzEom82')">
+      <div class="card tappable" onclick="showDetail('23:00 夜の自由時間 - パラダイスシティ','空港から車で約5分。アート展示、ホテル、カジノ、屋内遊園地、スパ、飲食・ショップが集まる大型複合施設。','', 'https://goo.gl/maps/h8f5TjzEom82')">
         <h3>23:00 夜の自由時間 <span class="detail-label">📌</span></h3>
         <p>なおきはカジノ！？</p>
       </div>
     </div>
 
-    <!-- 2日目 -->
+    <!-- 2日目（シンプル版） -->
     <div id="day2" class="dayContent">
       <div class="card">
         <h3>09:00 チェックアウト</h3>
         <p>ホテルを出発。空港へ向かいます。</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('09:30 仁川空港着 朝ごはん','空港周辺で朝食候補：老舗スープ店、空港直結ベーカリー、海鮮カルグクス店など。地図は当日確認。','','')">
         <h3>09:30 空港着 朝ごはん <span class="detail-label">📌</span></h3>
         <p>仁川空港付近の人気朝ごはん３選</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('12:35 仁川空港出発（ローマへ）','フライト時間は約13時間40分。映画や音楽でリラックス。','','')">
         <h3>12:35 仁川発 ✈ ローマ着 19:15 <span class="detail-label">📌</span></h3>
         <p>フライト中は映画タイム</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('20:00〜21:00 ローマ空港→市内','空港駅から直通列車でテルミニ駅へ。切符€14、所要約32分。','','')">
         <h3>20:00〜21:00 空港からローマ市内へ <span class="detail-label">📌</span></h3>
         <p>電車で約32分</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('21:00頃 テルミニ駅着→タクシー移動','荷物料金を含め合計およそ€10目安。ホテルまでタクシー移動。','','')">
         <h3>21:00頃 テルミニ駅着 <span class="detail-label">📌</span></h3>
         <p>タクシーでホテルへ</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('21:00〜22:00 ホテルチェックイン','Hotel La Ville にチェックイン。地図リンクから場所確認。','', 'https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z')">
         <h3>21:00〜22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
         <p>Hotel La Ville</p>
       </div>
-
       <div class="card tappable" onclick="showDetail('22:00 夜ご飯 — ローマのおすすめ','ローマ中心部の人気トラットリアやオステリアを候補に。混雑時は順番待ちあり。','','')">
         <h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
         <p>ローマ中心部／おすすめイタリアン 3選</p>
@@ -319,11 +254,10 @@ body.locked {
     <div id="day11" class="dayContent"></div>
   </div>
 
-  <!-- 予算ページ -->
-  <!-- 予算ページ -->
-<div id="page-budget" class="page">
-  <iframe src="budget.html" style="width:100%; height:80vh; border:none;"></iframe>
-</div>
+  <!-- 予算ページ（← 変更：iframeで読み込み） -->
+  <div id="page-budget" class="page">
+    <iframe src="budget.html"></iframe>
+  </div>
 
   <!-- アルバムページ -->
   <div id="page-album" class="page">
@@ -403,3 +337,4 @@ function closeDetail(e) {
 </script>
 </body>
 </html>
+
