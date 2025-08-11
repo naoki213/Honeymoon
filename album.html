@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Photo Album</title>
+<style>
+  :root{
+    --bg: var(--bg, #f6fbff);
+    --card: var(--card, #ffffff);
+    --ink: var(--ink, #133047);
+    --muted: var(--muted, #5f7a91);
+    --accent: var(--accent, #7bb8ff);
+    --accent-strong: var(--accent-strong, #3f9cff);
+    --accent-ink: var(--accent-ink, #0a2a45);
+    --ring: var(--ring, rgba(63,156,255,.35));
+    --shadow: var(--shadow, 0 8px 24px rgba(19,48,71,0.08));
+    --radius: var(--radius, 16px);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink); background:var(--bg); font-family: inherit;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    backdrop-filter:saturate(120%) blur(6px);
+    background: color-mix(in oklab, var(--bg) 85%, white);
+    border-bottom:1px solid color-mix(in oklab, var(--bg) 60%, var(--accent-ink));
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:16px;}
+  .title{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.02em;}
+  .title .dot{width:10px; height:10px; border-radius:50%; background:var(--accent-strong); box-shadow:0 0 0 6px var(--ring);}
+  .toolbar{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px}
+  .chip{
+    background:var(--card);
+    border:1px solid color-mix(in oklab, var(--accent) 10%, #e7eef6);
+    border-radius:999px; padding:8px 12px; font-size:13px; color:var(--muted);
+    box-shadow:var(--shadow);
+  }
+  #grid{
+    --size:180px;
+    display:grid; gap:10px;
+    grid-template-columns:repeat(auto-fill, minmax(min(var(--size), 100%), 1fr));
+    padding:18px;
+  }
+  .card{
+    position:relative; background:var(--card); border-radius:var(--radius);
+    overflow:hidden; box-shadow:var(--shadow);
+    border:1px solid color-mix(in oklab, var(--bg) 70%, var(--accent));
+    aspect-ratio: 1 / 1; display:grid; place-items:center;
+    transition:transform .08s ease;
+  }
+  .card:active{ transform:scale(.985); }
+  .card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .badge{
+    position:absolute; left:8px; bottom:8px;
+    background:rgba(0,0,0,.55); color:#fff; font-size:12px;
+    padding:3px 8px; border-radius:999px;
+  }
+  .empty, .error{
+    margin:24px; padding:18px; border-radius:calc(var(--radius) - 4px);
+    background:var(--card);
+    border:1px solid color-mix(in oklab, var(--bg) 70%, var(--accent));
+    box-shadow:var(--shadow); color:var(--muted);
+    white-space:pre-wrap;
+  }
+  dialog#viewer{ width:100vw; height:100dvh; border:none; padding:0; margin:0; background:#000; }
+  #viewer::backdrop{background:rgba(0,0,0,.75)}
+  .viewer-inner{position:relative; width:100%; height:100%;}
+  .viewer-img{
+    position:absolute; inset:0; margin:auto; max-width:96vw; max-height:90dvh; width:auto; height:auto;
+  }
+  .viewer-ui{
+    position:absolute; inset:12px; display:flex; justify-content:space-between; align-items:center;
+    color:#fff; font-size:14px; gap:8px;
+  }
+  .btn{
+    background:rgba(255,255,255,.10);
+    color:#fff; border:1px solid rgba(255,255,255,.28);
+    padding:8px 12px; border-radius:12px; cursor:pointer; user-select:none;
+    backdrop-filter: blur(4px);
+  }
+  .btn:active{transform:scale(.98)}
+  .spacer{flex:1}
+  footer{color:var(--muted); font-size:12px; text-align:center; padding:20px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title"><span class="dot"></span><span>アルバム</span></div>
+      <div class="toolbar">
+        <span class="chip">images/ に入れた写真が自動表示</span>
+        <span id="count" class="chip">読み込み中...</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="grid" aria-live="polite"></div>
+    <div id="msg" class="empty" hidden></div>
+    <div id="err" class="error" hidden></div>
+  </main>
+
+  <dialog id="viewer">
+    <div class="viewer-inner">
+      <img id="viewerImg" class="viewer-img" alt="">
+      <div class="viewer-ui">
+        <button class="btn" id="closeBtn">閉じる</button>
+        <div class="spacer"></div>
+        <a class="btn" id="openRaw" href="#" target="_blank" rel="noopener">原寸表示</a>
+        <button class="btn" id="prevBtn">◀︎</button>
+        <button class="btn" id="nextBtn">▶︎</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer>© <span id="year"></span> Your Name</footer>
+
+<script>
+/* ▼ 設定（あなたのリポジトリに合わせ済み） ▼ */
+const owner  = "naoki213";
+const repo   = "travel-shiori";
+let   branch = "main"; // 404なら master へ自動フォールバック
+/* ▲ 設定ここまで ▲ */
+
+const allowExt = ["jpg","jpeg","png","webp","gif"];
+const grid = document.getElementById("grid");
+const msg  = document.getElementById("msg");
+const err  = document.getElementById("err");
+const countChip = document.getElementById("count");
+document.getElementById("year").textContent = new Date().getFullYear();
+
+let photos = []; // {name, url, size}
+
+async function fetchImages(dir="images"){
+  const endpoint = (b)=>`https://api.github.com/repos/${owner}/${repo}/contents/${dir}?ref=${b}`;
+  let res = await fetch(endpoint(branch));
+  if (res.status === 404 && branch === "main") {
+    branch = "master";
+    res = await fetch(endpoint(branch));
+  }
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(
+`GitHub API error (${res.status})
+endpoint: ${endpoint(branch)}
+hint:
+- owner/repo が正しいか（${owner}/${repo}）
+- ブランチが main/master か
+- リポジトリが Public か
+- ${dir}/ フォルダが存在するか
+- 画像拡張子が jpg/jpeg/png/webp/gif か
+
+raw: ${body}`
+    );
+  }
+  const list = await res.json();
+  return list
+    .filter(x => x.type === "file")
+    .map(f => {
+      const ext = (f.name.split(".").pop() || "").toLowerCase();
+      if (!allowExt.includes(ext)) return null;
+      return { name:f.name, url:f.download_url, size:f.size };
+    })
+    .filter(Boolean)
+    .sort((a,b)=>a.name.localeCompare(b.name, 'ja')); // 名前順
+}
+
+function renderGrid(items){
+  grid.innerHTML = "";
+  if (!items.length){
+    msg.hidden = false;
+    msg.innerHTML = "images/ フォルダに写真がありません。<br>GitHubで <b>images</b> フォルダを作り、写真をアップロードしてください。";
+    countChip.textContent = "0枚";
+    return;
+  }
+  msg.hidden = true;
+
+  const frag = document.createDocumentFragment();
+  items.forEach((p, idx) => {
+    const card = document.createElement("button");
+    card.className = "card";
+    card.setAttribute("aria-label", p.name);
+    card.addEventListener("click", ()=>openViewer(idx));
+
+    const img = document.createElement("img");
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.src = p.url; // 取得した直リンク
+    img.alt = p.name;
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = p.name;
+
+    card.append(img, badge);
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+  countChip.textContent = `${items.length}枚`;
+}
+
+/* Lightbox */
+const dlg = document.getElementById("viewer");
+const viewerImg = document.getElementById("viewerImg");
+const openRaw = document.getElementById("openRaw");
+const nextBtn = document.getElementById("nextBtn");
+const prevBtn = document.getElementById("prevBtn");
+const closeBtn = document.getElementById("closeBtn");
+let currentIndex = 0;
+
+function openViewer(index){
+  currentIndex = index;
+  const p = photos[currentIndex];
+  viewerImg.src = p.url;
+  viewerImg.alt = p.name;
+  openRaw.href = p.url;
+  if (!dlg.open) dlg.showModal();
+}
+function showNext(step){
+  currentIndex = (currentIndex + step + photos.length) % photos.length;
+  openViewer(currentIndex);
+}
+nextBtn.addEventListener("click", ()=>showNext(1));
+prevBtn.addEventListener("click", ()=>showNext(-1));
+closeBtn.addEventListener("click", ()=>dlg.close());
+dlg.addEventListener("click", (e)=>{ if(e.target === dlg) dlg.close(); });
+document.addEventListener("keydown", (e)=>{
+  if (!dlg.open) return;
+  if (e.key === "Escape") dlg.close();
+  if (e.key === "ArrowRight") showNext(1);
+  if (e.key === "ArrowLeft") showNext(-1);
+});
+
+(async function init(){
+  try{
+    photos = await fetchImages("images");
+    renderGrid(photos);
+  }catch(e){
+    console.error(e);
+    err.hidden = false;
+    err.textContent = "読み込みでエラーが発生しました。\n" + String(e.message || e);
+    countChip.textContent = "—";
+  }
+})();
+</script>
+</body>
+</html>
