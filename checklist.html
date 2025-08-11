@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>チェックリスト</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* 既存CSSに寄り添う最小の追加だけ */
+    .record .title{font-weight:800}
+    .record.done .title{color:var(--muted); text-decoration:line-through}
+    .record .status{font-size:12px; color:var(--muted)}
+    .btn-check, .btn-del{
+      appearance:none; border:1px solid #dbe7f5; background:#fff; cursor:pointer;
+      padding:8px 12px; border-radius:12px; font-weight:700;
+    }
+    .btn-check{border-color:#cceedd}
+    .btn-check.done{color:#666; border-color:#ddd}
+    .btn-del{color:var(--danger); border-color:#ffd1d1}
+    .list-actions{display:flex; gap:8px}
+    .auth-row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .signin-btn{
+      appearance:none; border:0; border-radius:14px; padding:10px 14px; font-weight:800;
+      background:linear-gradient(180deg, var(--accent-strong), #3a8ef8); color:white; cursor:pointer;
+      box-shadow:0 6px 14px rgba(63,156,255,.25); font-size:14px;
+    }
+    .signout-btn{
+      appearance:none; border:1px solid #dbe7f5; background:#fff; cursor:pointer;
+      padding:8px 12px; border-radius:12px; font-weight:700; color:#333;
+    }
+    .sync-state{font-size:12px; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <h1>チェックリスト</h1>
+    <div class="sub">上で追加 → 下に一覧。チェックで最後尾／未チェックで先頭へ。複数端末同期（Googleシート）</div>
+  </header>
+
+  <main class="container">
+    <!-- 認証・同期 -->
+    <section class="card" id="authCard">
+      <h2>アカウント</h2>
+      <div class="auth-row">
+        <div>
+          <div id="userLabel" class="label">未サインイン</div>
+          <div id="syncState" class="sync-state">状態: idle</div>
+        </div>
+        <div>
+          <button id="signinBtn" class="signin-btn">Googleでサインイン</button>
+          <button id="signoutBtn" class="signout-btn" style="display:none">サインアウト</button>
+          <button id="reloadBtn" class="signout-btn">シート再読み込み</button>
+        </div>
+      </div>
+      <div class="hint">※ 初回承認後は自動ログインします。複数端末で同じGoogleアカウントを使えば同期されます。</div>
+    </section>
+
+    <!-- 追加欄 -->
+    <section class="card">
+      <h2>新規アイテム</h2>
+      <label class="label" for="newItem">内容</label>
+      <div class="grid-2">
+        <input id="newItem" type="text" placeholder="例）水を買う / 宿のチェックイン" />
+        <button id="addBtn" class="btn-primary">追加</button>
+      </div>
+      <div class="hint">Enterでも追加できます。空欄は追加できません。（未サインイン時は自動でログインを促します）</div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- リスト表示 -->
+    <section class="card">
+      <h2>チェックリスト</h2>
+      <ul id="list" class="record-list" aria-live="polite"></ul>
+      <div id="empty" class="empty">まだアイテムがありません</div>
+    </section>
+
+    <footer class="app-footer">ローカル保存（localStorage）＋Googleシート同期（操作ごとに自動保存）。</footer>
+  </main>
+
+  <script>
+    // ====== 設定 ======
+    const CONFIG = {
+      SPREADSHEET_ID: "1reMg4Us-dhO75cHdjJgOrK4k2baStMpVYo-BGqw2jNc",
+      SHEET_NAME: "Checklist",
+      GOOGLE_CLIENT_ID: "625081881930-td4vcu2cpnhp6n2aevc453m7as2l96tk.apps.googleusercontent.com",
+      SCOPE: "https://www.googleapis.com/auth/spreadsheets"
+    };
+
+    // ====== State ======
+    const KEY_LOCAL = "checklistItems_v1";
+    /** @type {{id:string,text:string,done:boolean,createdAt:number,doneAt?:number,updatedAt:number,deleted?:boolean}[]} */
+    let items = [];
+    let accessToken = null;
+    let tokenClient = null;
+    let userEmail = null;
+
+    // ====== DOM ======
+    const $list = document.getElementById("list");
+    const $empty = document.getElementById("empty");
+    const $newItem = document.getElementById("newItem");
+    const $addBtn = document.getElementById("addBtn");
+    const $toast = document.getElementById("toast");
+    const $signinBtn = document.getElementById("signinBtn");
+    const $signoutBtn = document.getElementById("signoutBtn");
+    const $reloadBtn = document.getElementById("reloadBtn");
+    const $userLabel = document.getElementById("userLabel");
+    const $syncState = document.getElementById("syncState");
+
+    // ====== LocalStorage ======
+    function loadLocal() {
+      try { items = JSON.parse(localStorage.getItem(KEY_LOCAL)) || []; }
+      catch { items = []; }
+    }
+    function saveLocal() {
+      localStorage.setItem(KEY_LOCAL, JSON.stringify(items));
+    }
+
+    // ====== 表示 ======
+    function render() {
+      const visible = items.filter(i => !i.deleted);
+      const undone = visible.filter(i => !i.done);
+      const done = visible.filter(i => i.done).sort((a,b) => (a.doneAt||0)-(b.doneAt||0));
+      const ordered = [...undone, ...done];
+
+      $list.innerHTML = "";
+      ordered.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "record" + (item.done ? " done" : "");
+        li.dataset.id = item.id;
+
+        const left = document.createElement("div");
+        left.className = "date";
+        const d = new Date(item.createdAt);
+        left.textContent = `${d.getMonth()+1}/${d.getDate()}`;
+
+        const center = document.createElement("div");
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = item.text;
+
+        const status = document.createElement("div");
+        status.className = "status";
+        status.textContent = item.done
+          ? `済み（${formatTime(item.doneAt)}）`
+          : `未完了`;
+
+        center.appendChild(title);
+        center.appendChild(status);
+
+        const right = document.createElement("div");
+        right.className = "list-actions";
+        const btnCheck = document.createElement("button");
+        btnCheck.className = "btn-check" + (item.done ? " done" : "");
+        btnCheck.textContent = item.done ? "済" : "チェック";
+        btnCheck.title = item.done ? "未完了に戻す" : "完了にする";
+        btnCheck.addEventListener("click", () => toggleDone(item.id));
+
+        const btnDel = document.createElement("button");
+        btnDel.className = "btn-del";
+        btnDel.textContent = "削除";
+        btnDel.addEventListener("click", () => removeItem(item.id));
+
+        right.appendChild(btnCheck);
+        right.appendChild(btnDel);
+
+        li.appendChild(left);
+        li.appendChild(center);
+        li.appendChild(right);
+        $list.appendChild(li);
+      });
+
+      $empty.style.display = items.length && ordered.length ? "none" : "block";
+    }
+
+    function formatTime(ts) {
+      if (!ts) return "";
+      const d = new Date(ts);
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      return `${d.getMonth()+1}/${d.getDate()} ${hh}:${mm}`;
+    }
+
+    // ====== 操作 ======
+    async function addItem(text) {
+      const t = text.trim();
+      if (!t) return toast("空欄は追加できません");
+      await ensureSignedIn(); // 自動ログイン要求
+      const now = Date.now();
+      items.push({
+        id: String(now) + Math.random().toString(36).slice(2,7),
+        text: t,
+        done: false,
+        createdAt: now,
+        updatedAt: now,
+        deleted: false
+      });
+      saveLocal(); render();
+      $newItem.value = "";
+      toast("追加しました");
+      await saveToSheet();
+      await loadFromSheet(); // 競合回避のため最新取得
+    }
+
+    async function toggleDone(id) {
+      await ensureSignedIn();
+      const idx = items.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      const item = items[idx];
+      item.done = !item.done;
+      item.updatedAt = Date.now();
+      if (item.done) {
+        item.doneAt = Date.now();
+        items.splice(idx,1); items.push(item);
+        toast("完了にしました（最後尾へ移動）");
+      } else {
+        delete item.doneAt;
+        items.splice(idx,1); items.unshift(item);
+        toast("未完了に戻しました（先頭へ移動）");
+      }
+      saveLocal(); render();
+      await saveToSheet();
+      await loadFromSheet();
+    }
+
+    async function removeItem(id) {
+      await ensureSignedIn();
+      const idx = items.findIndex(i => i.id === id);
+      if (idx === -1) return;
+      items[idx].deleted = true;        // 物理削除しない（トゥームストーン）
+      items[idx].updatedAt = Date.now();
+      saveLocal(); render();
+      toast("削除しました");
+      await saveToSheet();
+      await loadFromSheet();
+    }
+
+    function toast(msg) {
+      $toast.textContent = msg;
+      $toast.classList.add("show");
+      setTimeout(() => $toast.classList.remove("show"), 1200);
+    }
+
+    // ====== Google 認証 ======
+    window.onload = () => {
+      // Token client 準備
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CONFIG.GOOGLE_CLIENT_ID,
+        scope: CONFIG.SCOPE,
+        callback: (resp) => {
+          if (resp && resp.access_token) {
+            accessToken = resp.access_token;
+            userEmail = resp.error ? null : (google.accounts.id?.get().email || null);
+            $signoutBtn.style.display = "inline-block";
+            $signinBtn.style.display = "none";
+            $userLabel.textContent = "サインイン済み";
+            initApp();
+          }
+        },
+      });
+
+      // サイレントでトークン取得を試す（自動ログイン）
+      requestAccessToken({ prompt: "" });
+
+      // ボタンイベント
+      $signinBtn.addEventListener("click", () => requestAccessToken({ prompt: "consent" }));
+      $signoutBtn.addEventListener("click", signOut);
+      $reloadBtn.addEventListener("click", async () => {
+        await ensureSignedIn();
+        await loadFromSheet();
+        toast("再読み込みしました");
+      });
+
+      // 入力系イベント
+      $addBtn.addEventListener("click", () => addItem($newItem.value));
+      $newItem.addEventListener("keydown", e => { if (e.key === "Enter") addItem($newItem.value); });
+
+      // ローカル描画（オフラインでも見えるように）
+      loadLocal(); render();
+    };
+
+    function requestAccessToken({ prompt }) {
+      tokenClient.callback = (resp) => {
+        if (resp && resp.access_token) {
+          accessToken = resp.access_token;
+          $signoutBtn.style.display = "inline-block";
+          $signinBtn.style.display = "none";
+          $userLabel.textContent = "サインイン済み";
+          initApp();
+        }
+      };
+      tokenClient.requestAccessToken({ prompt });
+    }
+
+    async function ensureSignedIn() {
+      if (accessToken) return;
+      return new Promise((resolve, reject) => {
+        // silent
+        tokenClient.callback = (resp) => {
+          if (resp && resp.access_token) {
+            accessToken = resp.access_token;
+            $signoutBtn.style.display = "inline-block";
+            $signinBtn.style.display = "none";
+            $userLabel.textContent = "サインイン済み";
+            resolve();
+          } else {
+            reject(new Error("Failed to get access token (silent)"));
+          }
+        };
+        tokenClient.requestAccessToken({ prompt: "" });
+
+        // silentで入らなければ consent で再挑戦
+        setTimeout(() => {
+          if (!accessToken) {
+            tokenClient.callback = (resp) => {
+              if (resp && resp.access_token) {
+                accessToken = resp.access_token;
+                $signoutBtn.style.display = "inline-block";
+                $signinBtn.style.display = "none";
+                $userLabel.textContent = "サインイン済み";
+                resolve();
+              } else {
+                reject(new Error("Failed to get access token (consent)"));
+              }
+            };
+            tokenClient.requestAccessToken({ prompt: "consent" });
+          }
+        }, 700);
+      });
+    }
+
+    function signOut() {
+      accessToken = null;
+      userEmail = null;
+      $userLabel.textContent = "未サインイン";
+      $signoutBtn.style.display = "none";
+      $signinBtn.style.display = "inline-block";
+      toast("サインアウトしました");
+    }
+
+    // ====== Sheets I/O ======
+    async function initApp() {
+      try {
+        await ensureSheetExists();
+        await ensureHeaderRow();
+        await loadFromSheet();
+      } catch (e) {
+        console.warn(e);
+        toast("シート初期化に失敗しました");
+      }
+    }
+
+    async function ensureSheetExists() {
+      setSync("シート確認中…");
+      const meta = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}`);
+      const info = await meta.json();
+      const exists = (info.sheets || []).some(s => s.properties?.title === CONFIG.SHEET_NAME);
+      if (!exists) {
+        await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}:batchUpdate`, {
+          method: "POST",
+          body: JSON.stringify({
+            requests: [{ addSheet: { properties: { title: CONFIG.SHEET_NAME } } }]
+          })
+        });
+      }
+      setSync("idle");
+    }
+
+    async function ensureHeaderRow() {
+      setSync("ヘッダー確認中…");
+      const range = `${CONFIG.SHEET_NAME}!A1:G1`; // G列まで（deleted 追加）
+      const r = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?majorDimension=ROWS`);
+      const data = await r.json();
+      const needSet = !data.values || !data.values.length;
+      const header = ["id","text","done","createdAt","doneAt","updatedAt","deleted"];
+      if (needSet || !data.values[0].includes("deleted")) {
+        await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW`, {
+          method: "PUT",
+          body: JSON.stringify({ values: [header] })
+        });
+      }
+      setSync("idle");
+    }
+
+    async function loadFromSheet() {
+      setSync("読み込み中…");
+      const range = `${CONFIG.SHEET_NAME}!A2:G`;
+      const r = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?majorDimension=ROWS`);
+      const data = await r.json();
+      const rows = (data.values || []);
+      const loaded = rows.map(row => ({
+        id: row[0],
+        text: row[1] || "",
+        done: row[2] === "TRUE" || row[2] === "true",
+        createdAt: Number(row[3] || 0),
+        doneAt: row[4] ? Number(row[4]) : undefined,
+        updatedAt: Number(row[5] || 0),
+        deleted: row[6] === "TRUE" || row[6] === "true" || false,
+      }));
+      items = mergeById(items, loaded);
+      saveLocal(); render();
+      setSync("idle");
+    }
+
+    async function saveToSheet() {
+      // 直前に最新を取り込み→マージしてから保存（競合対策）
+      setSync("保存前取得…");
+      const pre = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:G")}?majorDimension=ROWS`);
+      const preData = await pre.json();
+      const remote = (preData.values || []).map(row => ({
+        id: row[0],
+        text: row[1] || "",
+        done: row[2] === "TRUE" || row[2] === "true",
+        createdAt: Number(row[3] || 0),
+        doneAt: row[4] ? Number(row[4]) : undefined,
+        updatedAt: Number(row[5] || 0),
+        deleted: row[6] === "TRUE" || row[6] === "true" || false,
+      }));
+      items = mergeById(items, remote);
+      saveLocal();
+
+      setSync("保存中…");
+      // データ域をクリア（A2:G）
+      await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values:batchClear`, {
+        method: "POST",
+        body: JSON.stringify({ ranges: [`${CONFIG.SHEET_NAME}!A2:G`] })
+      });
+
+      // 全レコードを書き込み（deleted=TRUE も含める）
+      const values = items.map(i => [
+        i.id, i.text, i.done ? "TRUE" : "FALSE",
+        String(i.createdAt),
+        i.doneAt ? String(i.doneAt) : "",
+        String(i.updatedAt),
+        i.deleted ? "TRUE" : "FALSE"
+      ]);
+
+      // 1st: batchUpdate
+      try {
+        await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values:batchUpdate`, {
+          method: "POST",
+          body: JSON.stringify({
+            valueInputOption: "RAW",
+            data: [{ range: `${CONFIG.SHEET_NAME}!A2:G`, values }]
+          })
+        });
+      } catch (e) {
+        // 2nd: 単純 PUT フォールバック
+        await gFetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:G")}?valueInputOption=RAW`,
+          { method: "PUT", body: JSON.stringify({ values }) }
+        );
+      }
+      setSync("idle");
+    }
+
+    function mergeById(localArr, remoteArr) {
+      const map = new Map();
+      for (const i of localArr) map.set(i.id, i);
+      for (const r of remoteArr) {
+        const cur = map.get(r.id);
+        if (!cur) map.set(r.id, r);
+        else map.set(r.id, (r.updatedAt > cur.updatedAt) ? r : cur);
+      }
+      return Array.from(map.values());
+    }
+
+    function setSync(text){ $syncState.textContent = `状態: ${text}`; }
+
+    // 詳細ログ＋401時はトークン再取得してリトライ
+    async function gFetch(url, init = {}) {
+      if (!accessToken) await ensureSignedIn();
+
+      const doFetch = async () => {
+        const headers = Object.assign({}, init.headers || {}, {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        });
+        return fetch(url, { ...init, headers });
+      };
+
+      let resp = await doFetch();
+
+      if (resp.status === 401) {
+        accessToken = null;
+        await ensureSignedIn();
+        resp = await doFetch();
+      }
+
+      if (!resp.ok) {
+        let bodyText = "";
+        try { bodyText = await resp.text(); } catch {}
+        console.warn("Sheets API error:", resp.status, url, bodyText);
+        throw new Error(`Sheets API ${resp.status}: ${bodyText}`);
+      }
+      return resp;
+    }
+  </script>
+</body>
+</html>
