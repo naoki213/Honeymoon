@@ -14,8 +14,6 @@
 <!-- PWA対応（Androidや将来の拡張用） -->
 <link rel="manifest" href="manifest.json">
 
-
-  
 <style>
 body, html {
   margin: 0;
@@ -118,7 +116,7 @@ body.locked {
 #day3 {background-image:url('https://i.pinimg.com/originals/6c/5f/38/6c5f38ac93c1eeb7367f641aca058454.jpg');}
 #day4 {background-image:url('https://m.media-amazon.com/images/I/814oApiuIYL._CR100,0,1060,1060_.jpg');}
 #day5 {background-image:url('https://media-cdn.tripadvisor.com/media/photo-s/12/5f/14/fb/pisa.jpg');}
-#day6 {background-image:url('https://th.bing.com/th/id/R.4c411048934adaccd1fadcc4576f33b0?rik=Po88E5fPst8HKw&riu=http%3a%2f%2fwww.10wallpaper.com%2fwallpaper%2f1280x1024%2f1209%2fcanal_grande_venice-City_photography_wallpaper_1280x1024.jpg&ehk=cOnc0thbm9gRrDDscK7gefQBLqVp3OBm1nLB9jWeN0k%3d&risl=&pid=ImgRaw&r=0');}
+#day6 {background-image:url('http://www.10wallpaper.com/wallpaper/1280x1024/1209/canal_grande_venice-City_photography_wallpaper_1280x1024.jpg');}
 #day7 {background-image:url('https://www.travelwith.jp/area/wp-content/uploads/sites/3/2020/06/025-2.jpg');}
 #day8 {background-image:url('https://www.myushop.net/uploads/blog/EF164_700.jpg');}
 #day9 {background-image:url('https://divnil.com/wallpaper/ipad/img/app/b/a/barcelona-spain-wallpaper-4xcvsn5_c064f5c4094f1e55036f2d37cc1c55b7_raw.jpg');}
@@ -143,9 +141,7 @@ body.locked {
 }
 
 /* タップ可能カード */
-.tappable {
-  cursor: pointer;
-}
+.tappable { cursor: pointer; }
 .detail-label {
   font-size: 14px;
   background: transparent;
@@ -254,171 +250,63 @@ body.locked {
   <!-- 日程ページ -->
   <div id="page-schedule" class="page">
 
-    <!-- 1日目（例） -->
+    <!-- 1日目 -->
     <div id="day1" class="dayContent">
       <div class="card">
         <h3>15:30 出発</h3>
-        <p>いよいよ新婚旅行スタート！自宅から空港へ向かいます。</p>
+        <p>いよいよ新婚旅行スタート！自宅から空港へ。</p>
       </div>
       <div class="card">
         <h3>19:05 関空 → 仁川</h3>
-        <p>韓国・仁川国際空港へフライト✈️（到着予定：21:00）</p>
+        <p>仁川国際空港へフライト（到着予定：21:00）。</p>
       </div>
-      <div class="card tappable" onclick="showDetail('22:00 ホテルチェックイン','ホテルビュー仁川エアポート<br>無料バスあり（21:36 / 21:56 発）','','https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z')">
+      <div class="card tappable" onclick="showDetail('22:00 ホテルチェックイン','ホテルビュー仁川エアポート。無料バスあり（21:36 / 21:56 発）。','','https://www.google.co.jp/maps/place/%E3%83%9B%E3%83%86%E3%83%AB%E3%83%BB%E3%83%92%E3%83%A5%E3%83%BC%E3%83%BB%E4%BB%81%E5%B7%9D%E3%82%A8%E3%82%A2%E3%83%9D%E3%83%BC%E3%83%88/@37.4388841,126.458465,17z')">
         <h3>22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
         <p>ホテルビュー仁川エアポート</p>
       </div>
-      <div class="card tappable" onclick="showDetail(
-        '23:00 夜の自由時間 - パラダイスシティ',
-        '<img src=\'https://www.p-city.com/mobilePub/static/images/hotelParadise/img_main_visual.jpg\' style=\'width:100%;border-radius:8px;margin-bottom:8px;\'>'
-        + '✨ <strong>基本概要</strong><ul>'
-        + '<li>仁川国際空港から車で約5分。無料シャトルバスあり。</li>'
-        + '<li>東京ドーム約7個分の広さを誇る大型複合リゾート。</li></ul>'
-        + '🎨 <strong>アート × デザイン</strong><ul>'
-        + '<li>約3,000点以上のアート作品を館内に展示。</li>'
-        + '<li>草間彌生やダミアン・ハーストなど世界的アーティストの作品も。</li></ul>'
-        + '🏨 & 🎲 <strong>ホテルとカジノ</strong><ul>'
-        + '<li>高級5つ星ホテル。</li>'
-        + '<li>外国人専用の24時間営業カジノ。</li></ul>'
-        + '🎡 <strong>エンタメ＆レジャー</strong><ul>'
-        + '<li>Wonderbox（屋内遊園地）：観覧車やメリーゴーランド。</li>'
-        + '<li>スパ、温水プール、サウナ、ジムも完備。</li></ul>'
-        + '🛍️ <strong>ショッピングとグルメ</strong><ul>'
-        + '<li>多彩なレストラン、カフェ、ショップ。</li>'
-        + '<li>フォトスポット多数（光る通路など）。</li></ul>',
-        '',
-        'https://goo.gl/maps/h8f5TjzEom82'
-      )">
+      <div class="card tappable" onclick="showDetail('23:00 夜の自由時間 - パラダイスシティ','空港から車で約5分。アート展示、ホテル、カジノ、屋内遊園地、スパ、飲食・ショップが集まる大型複合施設。','','https://goo.gl/maps/h8f5TjzEom82')">
         <h3>23:00 夜の自由時間 <span class="detail-label">📌</span></h3>
         <p>なおきはカジノ！？</p>
       </div>
     </div>
 
-   <div id="day2" class="dayContent">
+    <!-- 2日目 -->
+    <div id="day2" class="dayContent">
+      <div class="card">
+        <h3>09:00 チェックアウト</h3>
+        <p>ホテルを出発。空港へ向かいます。</p>
+      </div>
 
-  <!-- チェックアウト（非タップ） -->
-  <div class="card">
-    <h3>09:00 チェックアウト</h3>
-    <p>ホテルを出発。空港に向かいます。</p>
-  </div>
+      <div class="card tappable" onclick="showDetail('09:30 仁川空港着 朝ごはん','空港周辺で朝食候補：老舗スープ店、空港直結ベーカリー、海鮮カルグクス店など。地図は当日確認。','','')">
+        <h3>09:30 空港着 朝ごはん <span class="detail-label">📌</span></h3>
+        <p>仁川空港付近の人気朝ごはん３選</p>
+      </div>
 
-  <!-- 空港着＆朝ごはん（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '09:30 仁川空港着 朝ごはん',
-    <p>仁川空港付近で韓国の地元系朝ごはんを楽しめるおすすめスポットを3つご紹介します。</p>
-    <ol>
-      <li><strong>Pyeongyangok（평양옥）</strong> – 해장국（スープ）老舗<br>
-      営業: 05:00〜正午 / 空港から車15〜20分<br>
-      📍 <a href='https://maps.google.com/?q=Pyeongyangok+Incheon' target='_blank'>Googleマップ</a></li>
-      <li><strong>meallions</strong> – ベーカリーカフェ（空港直結）<br>
-      営業: 早朝〜 / 空港地下1F<br>
-      📍 <a href='https://maps.google.com/?q=meallions+Incheon+Airport' target='_blank'>Googleマップ</a></li>
-      <li><strong>황해해물칼국수</strong> – 海鮮カルグクス<br>
-      営業: 09:00〜19:00 / 新浦市場近く<br>
-      📍 <a href='https://maps.google.com/?q=Hwanghae+Haemul+Kalguksu+Incheon' target='_blank'>Googleマップ</a></li>
-    </ol>,
-    '',
-    ''
-  )">
-    <h3>09:30 空港着 朝ごはん <span class="detail-label">📌</span></h3>
-    <p>仁川空港付近の人気朝ごはん３選</p>
-  </div>
+      <div class="card tappable" onclick="showDetail('12:35 仁川空港出発（ローマへ）','フライト時間は約13時間40分。映画や音楽でリラックス。','','')">
+        <h3>12:35 仁川発 ✈ ローマ着 19:15 <span class="detail-label">📌</span></h3>
+        <p>フライト中は映画タイム</p>
+      </div>
 
-  <!-- フライト（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '12:35 仁川空港出発（13時間40分）',
-    <p>アマゾンプライムで観られるおすすめ映画３選</p>
-    <ul>
-      <li>1. <strong>ラ・ラ・ランド</strong> – ミュージカル×ラブストーリー</li>
-      <li>2. <strong>グリーンブック</strong> – 人種差別と友情の感動作</li>
-      <li>3. <strong>インターステラー</strong> – SF×人間ドラマの大作</li>
-    </ul>,
-    '',
-    ''
-  )">
-    <h3>12:35 仁川発 ✈ ローマ着 19:15 <span class="detail-label">📌</span></h3>
-    <p>フライト中は映画タイム</p>
-  </div>
+      <div class="card tappable" onclick="showDetail('20:00〜21:00 ローマ空港→市内','空港駅から直通列車でテルミニ駅へ。切符€14、所要約32分。','','')">
+        <h3>20:00〜21:00 空港からローマ市内へ <span class="detail-label">📌</span></h3>
+        <p>電車で約32分</p>
+      </div>
 
-  <!-- ローマ空港～市内移動（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '20:00〜21:00 ローマ空港→市内',
-    <ol>
-      <li>入国後、「Fiumicino Aeroporto」駅へ移動</li>
-      <li>券売機で€14の切符購入 → 刻印</li>
-      <li>23/24番ホームから乗車</li>
-      <li>約32分後、Roma Termini駅着</li>
-    </ol>,
-    '',
-    ''
-  )">
-    <h3>20:00〜21:00 空港からローマ市内へ <span class="detail-label">📌</span></h3>
-    <p>電車で約32分</p>
-  </div>
+      <div class="card tappable" onclick="showDetail('21:00頃 テルミニ駅着→タクシー移動','荷物料金を含め合計およそ€10目安。ホテルまでタクシー移動。','','')">
+        <h3>21:00頃 テルミニ駅着 <span class="detail-label">📌</span></h3>
+        <p>タクシーでホテルへ</p>
+      </div>
 
-  <!-- テルミ二駅到着＆タクシー（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '21:00頃 テルミ二駅着→タクシー',
-    <p>キャリー1つにつき1ユーロ、計約10ユーロ</p>,
-    '',
-    ''
-  )">
-    <h3>21:00頃 テルミ二駅着 <span class="detail-label">📌</span></h3>
-    <p>タクシーでホテルへ</p>
-  </div>
+      <div class="card tappable" onclick="showDetail('21:00〜22:00 ホテルチェックイン','Hotel La Ville にチェックイン。地図リンクから場所確認。','', 'https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z')">
+        <h3>21:00〜22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
+        <p>Hotel La Ville</p>
+      </div>
 
-  <!-- ホテル到着（タップ） -->
-  <div class="card tappable" onclick="showDetail(
-    '21:00〜22:00 ホテルチェックイン',
-    <p>Hotel La Ville</p>
-    <a href='https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z' target='_blank'>📍 Googleマップ</a>,
-    '',
-    'https://www.google.co.jp/maps/place/Hotel+La+Ville/@41.9177281,12.5120499,17z'
-  )">
-    <h3>21:00〜22:00 ホテルチェックイン <span class="detail-label">📌</span></h3>
-    <p>Hotel La Ville</p>
-  </div>
-
-<!-- 修正済み：夜ご飯カード詳細（モーダル）表示部分 -->
-<div class="card tappable" onclick="showDetail(
-  '22:00 夜ご飯 — ローマのおすすめレストラン',
-  
-  <div style='text-align:center;'>
-    <img src='https://media-cdn.tripadvisor.com/media/photo-s/16/9f/8f/d3/osteria-da-fortunata.jpg' alt='Osteria da Fortunata' style='width:100%;height:auto;border-radius:8px;margin-bottom:10px;'>
-  </div>
-  <strong>予算:</strong> 約50 ユーロ /人<br><br>
-
-  <strong>おすすめレストラン総合:</strong><br>
-  <ul>
-    <li><strong>Osteria da Fortunata</strong><br>
-      手払ちパスタが名物。僕地のあたたかみある雰囲気。<br>
-      【住所】Via del Pellegrino 11/12, Rome<br>
-      【時間】11:30 − 25:00<br>
-      【特徴】宝石スポットのパスタは見逃せない。
-    </li><br>
-    <li><strong>Armando al Pantheon</strong><br>
-      パンテオンすぐ近。ローマ传統料理が羨望の名店。<br>
-      【住所】Salita de’ Crescenzi 31, Rome<br>
-      【時間】12:30−15:00, 19:00−23:00 （日曜休）<br>
-      【特徴】気品よくサービスがスムーズ
-    </li><br>
-    <li><strong>Trattoria Vecchia Roma</strong><br>
-      地元で愛される家庭的なトラットリア。ローマ料理の素晴らしさを矩上。<br>
-      【住所】Via Ferruccio 12B, Rome<br>
-      【時間】12:30−15:00, 19:00−23:00<br>
-      【特徴】カルボナーラやテラミスたっぷり。
-    </li>
-  </ul>
-  ,
-  '',
-  ''
-)">
-  <h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
-  <p>ローマ中心部／おすすめイタリアン 3選</p>
-</div>
-
-
-</div>
+      <div class="card tappable" onclick="showDetail('22:00 夜ご飯 — ローマのおすすめ','ローマ中心部の人気トラットリアやオステリアを候補に。混雑時は順番待ちあり。','','')">
+        <h3>22:00 夜ご飯 <span class="detail-label">📌</span></h3>
+        <p>ローマ中心部／おすすめイタリアン 3選</p>
+      </div>
+    </div>
 
     <div id="day3" class="dayContent"></div>
     <div id="day4" class="dayContent"></div>
@@ -431,16 +319,15 @@ body.locked {
     <div id="day11" class="dayContent"></div>
   </div>
 
-<!-- 予算ページ -->
+  <!-- 予算ページ -->
   <div id="page-budget" class="page">
     <p>予算</p>
-
-     </div>
-
-
+  </div>
 
   <!-- アルバムページ -->
-  <div id="page-album" class="page"><p>アルバムページ（作成予定）</p></div>
+  <div id="page-album" class="page">
+    <p>アルバムページ（作成予定）</p>
+  </div>
 
   <!-- 下部ナビ -->
   <div id="bottomNav">
@@ -449,8 +336,6 @@ body.locked {
     <button onclick="showPage('album')">アルバム</button>
   </div>
 </div>
-
-
 
 <!-- 詳細モーダル -->
 <div id="detailModal" onclick="closeDetail(event)">
@@ -475,22 +360,25 @@ function checkPassword() {
     alert("パスワードが違います");
   }
 }
+
 function showPage(page) {
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-  document.getElementById(page-${page}).style.display = "block";
+  document.getElementById(`page-${page}`).style.display = "block";
   document.querySelectorAll("#bottomNav button").forEach(btn => btn.classList.remove("active"));
-  document.querySelector(#bottomNav button[onclick*="${page}"]).classList.add("active");
+  document.querySelector(`#bottomNav button[onclick*="${page}"]`).classList.add("active");
   document.getElementById("dayNav").style.display = (page === 'schedule') ? 'flex' : 'none';
 }
+
 function showDay(day) {
   document.querySelectorAll(".dayContent").forEach(div => div.style.display = "none");
   document.getElementById("day" + day).style.display = "block";
   document.querySelectorAll("#dayNav button").forEach(btn => btn.classList.remove("active"));
-  document.querySelector(#dayNav button:nth-child(${day})).classList.add("active");
+  document.querySelector(`#dayNav button:nth-child(${day})`).classList.add("active");
 }
+
 function showDetail(title, text, image, mapUrl) {
   document.getElementById("detailTitle").textContent = title;
-  document.getElementById("detailText").innerHTML = text;
+  document.getElementById("detailText").textContent = text || '';
   if (image) {
     document.getElementById("detailImage").src = image;
     document.getElementById("detailImage").style.display = "block";
@@ -505,13 +393,12 @@ function showDetail(title, text, image, mapUrl) {
   }
   document.getElementById("detailModal").style.display = "block";
 }
+
 function closeDetail(e) {
   if (e.target.id === "detailModal" || e.target.classList.contains("closeBtn")) {
     document.getElementById("detailModal").style.display = "none";
   }
 }
-
-   
 </script>
 </body>
 </html>
