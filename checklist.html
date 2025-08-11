@@ -31,13 +31,15 @@
       padding:8px 12px; border-radius:12px; font-weight:700; color:#333;
     }
     .sync-state{font-size:12px; color:var(--muted)}
+    /* 日付列を使わないため、レコードのレイアウトを2列に上書き */
+    .record{grid-template-columns:1fr auto}
+    .record .date{display:none}
   </style>
 </head>
 <body>
   <!-- ヘッダー -->
   <header class="app-header">
     <h1>チェックリスト</h1>
-    
   </header>
 
   <main class="container">
@@ -91,7 +93,7 @@
 
     // ====== State ======
     const KEY_LOCAL = "checklistItems_v1";
-    /** @type {{id:string,text:string,done:boolean,createdAt:number,doneAt?:number,updatedAt:number,deleted?:boolean}[]} */
+    /** @type {{id:string,text:string,done:boolean,updatedAt:number,deleted?:boolean}[]} */
     let items = [];
     let accessToken = null;
     let tokenClient = null;
@@ -122,7 +124,7 @@
     function render() {
       const visible = items.filter(i => !i.deleted);
       const undone = visible.filter(i => !i.done);
-      const done = visible.filter(i => i.done).sort((a,b) => (a.doneAt||0)-(b.doneAt||0));
+      const done = visible.filter(i => i.done); // 完了は末尾（配列順を保持）
       const ordered = [...undone, ...done];
 
       $list.innerHTML = "";
@@ -131,11 +133,7 @@
         li.className = "record" + (item.done ? " done" : "");
         li.dataset.id = item.id;
 
-        const left = document.createElement("div");
-        left.className = "date";
-        const d = new Date(item.createdAt);
-        left.textContent = `${d.getMonth()+1}/${d.getDate()}`;
-
+        // 中央: タイトル + ステータス（日時表示なし）
         const center = document.createElement("div");
         const title = document.createElement("div");
         title.className = "title";
@@ -143,13 +141,12 @@
 
         const status = document.createElement("div");
         status.className = "status";
-        status.textContent = item.done
-          ? `済み（${formatTime(item.doneAt)}）`
-          : `未完了`;
+        status.textContent = item.done ? "済み" : "未完了";
 
         center.appendChild(title);
         center.appendChild(status);
 
+        // 右: ボタン群
         const right = document.createElement("div");
         right.className = "list-actions";
         const btnCheck = document.createElement("button");
@@ -166,21 +163,12 @@
         right.appendChild(btnCheck);
         right.appendChild(btnDel);
 
-        li.appendChild(left);
         li.appendChild(center);
         li.appendChild(right);
         $list.appendChild(li);
       });
 
       $empty.style.display = items.length && ordered.length ? "none" : "block";
-    }
-
-    function formatTime(ts) {
-      if (!ts) return "";
-      const d = new Date(ts);
-      const hh = String(d.getHours()).padStart(2,"0");
-      const mm = String(d.getMinutes()).padStart(2,"0");
-      return `${d.getMonth()+1}/${d.getDate()} ${hh}:${mm}`;
     }
 
     // ====== 操作 ======
@@ -193,7 +181,6 @@
         id: String(now) + Math.random().toString(36).slice(2,7),
         text: t,
         done: false,
-        createdAt: now,
         updatedAt: now,
         deleted: false
       });
@@ -212,11 +199,11 @@
       item.done = !item.done;
       item.updatedAt = Date.now();
       if (item.done) {
-        item.doneAt = Date.now();
+        // 完了は末尾へ
         items.splice(idx,1); items.push(item);
         toast("完了にしました（最後尾へ移動）");
       } else {
-        delete item.doneAt;
+        // 未完了は先頭へ
         items.splice(idx,1); items.unshift(item);
         toast("未完了に戻しました（先頭へ移動）");
       }
@@ -368,14 +355,15 @@
       setSync("idle");
     }
 
+    // ヘッダーは id, text, done, updatedAt, deleted の5列
     async function ensureHeaderRow() {
       setSync("ヘッダー確認中…");
-      const range = `${CONFIG.SHEET_NAME}!A1:G1`; // G列まで（deleted 追加）
+      const range = `${CONFIG.SHEET_NAME}!A1:E1`;
       const r = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?majorDimension=ROWS`);
       const data = await r.json();
-      const needSet = !data.values || !data.values.length;
-      const header = ["id","text","done","createdAt","doneAt","updatedAt","deleted"];
-      if (needSet || !data.values[0].includes("deleted")) {
+      const header = ["id","text","done","updatedAt","deleted"];
+      const needSet = !data.values || !data.values.length || data.values[0].join(",") !== header.join(",");
+      if (needSet) {
         await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW`, {
           method: "PUT",
           body: JSON.stringify({ values: [header] })
@@ -386,7 +374,7 @@
 
     async function loadFromSheet() {
       setSync("読み込み中…");
-      const range = `${CONFIG.SHEET_NAME}!A2:G`;
+      const range = `${CONFIG.SHEET_NAME}!A2:E`;
       const r = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(range)}?majorDimension=ROWS`);
       const data = await r.json();
       const rows = (data.values || []);
@@ -394,10 +382,8 @@
         id: row[0],
         text: row[1] || "",
         done: row[2] === "TRUE" || row[2] === "true",
-        createdAt: Number(row[3] || 0),
-        doneAt: row[4] ? Number(row[4]) : undefined,
-        updatedAt: Number(row[5] || 0),
-        deleted: row[6] === "TRUE" || row[6] === "true" || false,
+        updatedAt: Number(row[3] || 0),
+        deleted: row[4] === "TRUE" || row[4] === "true" || false,
       }));
       items = mergeById(items, loaded);
       saveLocal(); render();
@@ -407,32 +393,28 @@
     async function saveToSheet() {
       // 直前に最新を取り込み→マージしてから保存（競合対策）
       setSync("保存前取得…");
-      const pre = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:G")}?majorDimension=ROWS`);
+      const pre = await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:E")}?majorDimension=ROWS`);
       const preData = await pre.json();
       const remote = (preData.values || []).map(row => ({
         id: row[0],
         text: row[1] || "",
         done: row[2] === "TRUE" || row[2] === "true",
-        createdAt: Number(row[3] || 0),
-        doneAt: row[4] ? Number(row[4]) : undefined,
-        updatedAt: Number(row[5] || 0),
-        deleted: row[6] === "TRUE" || row[6] === "true" || false,
+        updatedAt: Number(row[3] || 0),
+        deleted: row[4] === "TRUE" || row[4] === "true" || false,
       }));
       items = mergeById(items, remote);
       saveLocal();
 
       setSync("保存中…");
-      // データ域をクリア（A2:G）
+      // データ域をクリア（A2:E）
       await gFetch(`https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values:batchClear`, {
         method: "POST",
-        body: JSON.stringify({ ranges: [`${CONFIG.SHEET_NAME}!A2:G`] })
+        body: JSON.stringify({ ranges: [`${CONFIG.SHEET_NAME}!A2:E`] })
       });
 
       // 全レコードを書き込み（deleted=TRUE も含める）
       const values = items.map(i => [
         i.id, i.text, i.done ? "TRUE" : "FALSE",
-        String(i.createdAt),
-        i.doneAt ? String(i.doneAt) : "",
         String(i.updatedAt),
         i.deleted ? "TRUE" : "FALSE"
       ]);
@@ -443,13 +425,13 @@
           method: "POST",
           body: JSON.stringify({
             valueInputOption: "RAW",
-            data: [{ range: `${CONFIG.SHEET_NAME}!A2:G`, values }]
+            data: [{ range: `${CONFIG.SHEET_NAME}!A2:E`, values }]
           })
         });
       } catch (e) {
         // 2nd: 単純 PUT フォールバック
         await gFetch(
-          `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:G")}?valueInputOption=RAW`,
+          `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SPREADSHEET_ID}/values/${encodeURIComponent(CONFIG.SHEET_NAME + "!A2:E")}?valueInputOption=RAW`,
           { method: "PUT", body: JSON.stringify({ values }) }
         );
       }
