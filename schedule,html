@@ -158,9 +158,185 @@
 
 </div>
 
-  
-  <div id="day4" class="dayContent"></div>
-  <div id="day5" class="dayContent"></div>
+ <!-- ===== 4日目（9/15 月） ローマ → フィレンツェ → ピサ日帰り ===== -->
+<div id="day4" class="dayContent">
+
+  <!-- 07:30 サン・ピエトロ大聖堂 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '07:30 サン・ピエトロ大聖堂（自由参観）',
+         '早朝が快適。セキュリティチェックあり（列に並ぶ想定）。\n服装規定：肩・膝の露出は避ける（薄手の羽織りが便利）。\n混雑前に到着→ドーム上部の展望（別料金）も検討可。\nメモ：当日の案内は公式で要確認。\n公式：basilicasanpietro.va ／ 観光情報：voxcity.com',
+         'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200',
+         ''
+       )">
+    <h3>07:30 サン・ピエトロ大聖堂 <span class="detail-label">📌</span></h3>
+    <p>早朝参観で混雑回避</p>
+  </div>
+
+  <!-- 09:30 バチカン美術館 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '09:30 バチカン美術館（要予約）',
+         '営業時間（月〜土）08:00–20:00／最終入場18:00。\n短時間鑑賞もOK：地図を見てルート短縮（システィーナ礼拝堂を優先）。\n手荷物は最小に。館内は広いので要スニーカー。\n公式：museivaticani.va',
+         'https://images.unsplash.com/photo-1531060643191-3905f33fd2c1?w=1200',
+         ''
+       )">
+    <h3>09:30 バチカン美術館 <span class="detail-label">📌</span></h3>
+    <p>ハイライト優先で効率見学</p>
+  </div>
+
+  <!-- 13:30 Termini → Firenze SMN（高速） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '13:30 ローマ Termini → フィレンツェ SMN（高速）',
+         '所要：約1時間15〜30分（Frecciarossa/Italo）。\n指定席・大荷物OK。発車数分前までにプラットフォームへ。\n軽食・水は駅で調達。',
+         'https://images.unsplash.com/photo-1526129318478-62ed807ebdf4?w=1200',
+         ''
+       )">
+    <h3>13:30 高速列車でフィレンツェへ <span class="detail-label">🚄</span></h3>
+    <p>約1時間15〜30分</p>
+  </div>
+
+  <!-- 14:45 チェックイン -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '14:45 チェックイン：Hotel San Giorgio & Olimpic',
+         'チェックイン 14:00〜／チェックアウト 〜11:00。\n荷物を預けて身軽に。公式：hotelsangiorgioflorence.com',
+         'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200',
+         ''
+       )">
+    <h3>14:45 【泊】Hotel San Giorgio &amp; Olimpic <span class="detail-label">🏨</span></h3>
+    <p>荷物置いて身軽に移動</p>
+  </div>
+
+  <!-- 16:07 Firenze → Pisa -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '16:07頃 フィレンツェ SMN → ピサ',
+         '所要：最短46〜60分、直通多数。\n斜塔最寄りは「Pisa S. Rossore」。SMN→Pisa CentraleでもOK（バス/徒歩で移動）。\n検索：italiarail.com／ザ・トレインライン',
+         'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=1200',
+         ''
+       )">
+    <h3>16:07頃 フィレンツェ → ピサ <span class="detail-label">🚆</span></h3>
+    <p>直通豊富／約46〜60分</p>
+  </div>
+
+  <!-- 17:30 ピサの斜塔クライム -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '17:30 ピサの斜塔クライム',
+         '入場は30分刻みの時間枠制。最終入場は閉館30分前。\n9月は概ね 9:00–20:00（要確認）。\n手荷物は預ける場合あり、階段多め・滑りにくい靴推奨。\n公式：opapisa.it／leaningtowerofpisatickets.com',
+         'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=1200',
+         ''
+       )">
+    <h3>17:30 ★ピサの斜塔 <span class="detail-label">📌</span></h3>
+    <p>時間枠制で階段を登る</p>
+  </div>
+
+  <!-- 19:30 ピサ → フィレンツェ -->
+  <div class="card">
+    <h3>19:30 ピサ発 → 20:30頃 フィレンツェ帰着</h3>
+    <p>帰路も直通列車が便利。夕景の街並みも◎</p>
+  </div>
+
+  <!-- 21:00 ビステッカの夕食 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '21:00 ビステッカの夕食',
+         '名物Tボーンは量が多いのでシェア推奨。予約が安心。\n候補：Trattoria dall’Oste（中心部に複数店）／Perseus（12:00–14:30, 19:00–23:00・日休）。\n公式：Trattoria dalloste - Firenze／casatrattoria.com',
+         'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200',
+         ''
+       )">
+    <h3>21:00 ★ビステッカ <span class="detail-label">🍖</span></h3>
+    <p>がっつり名物ステーキ</p>
+  </div>
+
+</div>
+
+
+<!-- ===== 5日目（9/16 火） フィレンツェ観光 → 夜ヴェネツィア ===== -->
+<div id="day5" class="dayContent">
+
+  <!-- 08:15 ドゥオーモ クーポラ -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '08:15 ドゥオーモのクーポラ登頂',
+         '要「Brunelleschi Pass」＋時間指定。エレベーターなし、段数多数。\n早朝は光が柔らかく、街の赤屋根パノラマが絶景。\n公式：tickets.duomo.firenze.it／duomo.firenze.it',
+         'https://images.unsplash.com/photo-1543349689-9a4d426bee8b?w=1200',
+         ''
+       )">
+    <h3>08:15 ★ドゥオーモ クーポラ <span class="detail-label">📌</span></h3>
+    <p>時間指定＆階段のみ</p>
+  </div>
+
+  <!-- 10:30 サンタ・マリア・ノヴェッラ教会 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '10:30 サンタ・マリア・ノヴェッラ教会',
+         '駅すぐ。基本 平日9:00〜17:30／金は11:00〜（要確認）。\n礼拝の時間帯は一部見学制限あり。\n公式：smn.it',
+         'https://images.unsplash.com/photo-1607353810837-3b3303c60a50?w=1200',
+         ''
+       )">
+    <h3>10:30 サンタ・マリア・ノヴェッラ <span class="detail-label">⛪</span></h3>
+    <p>駅近でアクセス良好</p>
+  </div>
+
+  <!-- 12:30 ランチ（軽め） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '12:30 ランチ（軽め）',
+         '午後の散歩に備えてパニーノやサラダで軽く。\n市場（Mercato Centrale）や角のバールも便利。',
+         'https://images.unsplash.com/photo-1604908554007-06259eac1a7b?w=1200',
+         ''
+       )">
+    <h3>12:30 ランチ（軽め） <span class="detail-label">🥪</span></h3>
+    <p>メルカート・チェントラーレも◎</p>
+  </div>
+
+  <!-- 13:30 ポンテ・ヴェッキオ散歩 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '13:30 ポンテ・ヴェッキオ散歩',
+         '14世紀再建の最古の橋。宝飾店が並ぶ風景が象徴的。\n午後のアルノ川沿いは写真が映える。',
+         'https://images.unsplash.com/photo-1529851060450-6f5f0f0dc9e1?w=1200',
+         ''
+       )">
+    <h3>13:30 ポンテ・ヴェッキオ <span class="detail-label">🌉</span></h3>
+    <p>旧市街ぶらりとセットで</p>
+  </div>
+
+  <!-- 15:00 旧市街ぶらり -->
+  <div class="card">
+    <h3>15:00 旧市街ぶらり</h3>
+    <p>ドゥオーモ広場〜共和国広場〜シニョーリア広場をのんびり。</p>
+  </div>
+
+  <!-- 20:00 フィレンツェ → ヴェネツィア -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '20:00 高速列車：フィレンツェ → ヴェネツィア S. Lucia',
+         '所要：約2時間。夜着でも駅前・水上バスで本島移動が容易。\n到着後は運河沿いを少しだけ夜景さんぽ。',
+         'https://images.unsplash.com/photo-1469212044024-8daea2fd1d3b?w=1200',
+         ''
+       )">
+    <h3>20:00 高速列車でヴェネツィアへ <span class="detail-label">🚄</span></h3>
+    <p>約2時間 → 夜景さんぽ</p>
+  </div>
+
+  <!-- 【泊】Hotel Lugano Torretta（メストレ） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '【泊】Hotel Lugano Torretta（メストレ）',
+         '本島手前のメストレ。駅・バス至近で本島アクセス良。\n公式：hotellugano.it',
+         'https://images.unsplash.com/photo-1541971875076-8f970d573be2?w=1200',
+         ''
+       )">
+    <h3>【泊】Hotel Lugano Torretta <span class="detail-label">🏨</span></h3>
+    <p>メストレ拠点で機動力UP</p>
+  </div>
+
+</div>
+
   <div id="day6" class="dayContent"></div>
   <div id="day7" class="dayContent"></div>
   <div id="day8" class="dayContent"></div>
