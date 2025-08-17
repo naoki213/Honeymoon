@@ -29,11 +29,10 @@ html, body {
   color: #102a43;
 }
 
-/* ページ共通 */
+/* 共通：ページ */
 .page {
   display: none;
   padding: 15px;
-  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
 }
 
 /* ===== トップページ ===== */
@@ -48,78 +47,69 @@ html, body {
   place-items: center;
   padding: env(safe-area-inset-top) 16px calc(16px + env(safe-area-inset-bottom));
 }
-#homeCard {
-  backdrop-filter: blur(0px);
-  background: rgba(255,255,255,0.0);
-  text-align: center;
-  padding: 24px;
-  border-radius: 16px;
-}
-#homeCard h1{
-  margin: 0 0 8px;
-  font-size: 36px;
-  line-height: 1.2;
-  color: #000;
-  font-weight: 800;
-  letter-spacing: .5px;
-}
+#homeCard { background: rgba(255,255,255,0.0); text-align: center; padding: 24px; border-radius: 16px; }
+#homeCard h1{ margin: 0 0 8px; font-size: 36px; line-height: 1.2; color: #000; font-weight: 800; letter-spacing: .5px; }
 #homeCard p{ margin: 6px 0; font-size: 16px; color: #000; font-weight: 600; }
-#startBtn {
-  margin-top: 20px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 800;
+#startBtn{
+  margin-top: 20px; padding: 12px 24px; font-size: 16px; font-weight: 800;
   background: #64b5f6; color: #fff; border: none; border-radius: 999px; cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0,0,0,.2);
-  transition: transform .06s, background .2s;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2); transition: transform .06s, background .2s;
 }
 #startBtn:hover { background: #42a5f5; }
 #startBtn:active { transform: translateY(1px); }
 
 /* ======== 日程ページ（背景固定＋内容だけスクロール） ======== */
+/* 固定背景（スケジュール時のみ表示） */
 #scheduleBg{
   position: fixed; inset: 0;
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; /* PCでのスクロール視差も自然に */
+  background-attachment: fixed; /* PCでの視差にも自然 */
   z-index: 0;
-  display: none; /* schedule以外では非表示 */
+  display: none;
 }
 #scheduleBg::after{
-  /* 読みやすさ用の薄い被せ（必要に応じて濃さ調整） */
-  content: ""; position: absolute; inset: 0;
-  background: rgba(0,0,0,.12);
+  content:""; position:absolute; inset:0;
+  background: rgba(0,0,0,.12); /* 文字可読性のための薄い被せ */
 }
 
 /* スクロール容器はページ側にする（bodyは固定背景の台） */
 #page-schedule{
   position: relative;
-  z-index: 1;              /* 背景より前面 */
-  height: 100dvh;          /* 画面高 */
-  overflow-y: auto;        /* ここだけスクロール */
+  z-index: 1;
+  height: 100dvh;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: transparent; /* 背景は #scheduleBg が担う */
-  padding-top: 0;
+  background: transparent;
+  padding: 0; /* ← タブを端まで広げるため0 */
 }
 
-/* 日付ナビ（スクロール容器内でsticky） */
+/* 日程タブ（上部固定・左右いっぱい） */
 #dayNav{
-  position: sticky; top: 0;
-  background: rgba(66,165,245,0.95);
+  position: sticky; top: 0; left: 0; right: 0;
+  width: 100%;
+  background: rgba(66,165,245,0.98);
+  backdrop-filter: saturate(120%) blur(0px);
   overflow-x: auto; white-space: nowrap;
-  padding: 8px; z-index: 5;
-  display: none; /* ルータでschedule時に表示 */
+  padding: calc(8px + env(safe-area-inset-top)) 12px 8px; /* ノッチ対応 */
+  margin: 0;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-#dayNav button {
-  margin: 0 5px; padding: 12px 16px; font-size: 15px;
+#dayNav button{
+  margin: 0 6px; padding: 12px 16px; font-size: 15px;
   background: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; flex-shrink: 0;
 }
-#dayNav button.active { background: #64b5f6; color: #fff; }
+#dayNav button.active{ background:#64b5f6; color:#fff; }
 
-/* 各日のラッパー（背景は透明。高さは自然に） */
+/* 内容側だけ左右余白を持たせる */
+.scheduleBody{
+  padding: 12px 15px calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
+}
+
+/* 各日のラッパー（背景は固定なので透明） */
 .dayContent{
   display: none;
-  padding: 15px;
   background: transparent;
 }
 
@@ -205,7 +195,7 @@ html, body {
 
 <!-- ===== 日程ページ（Schedule） ===== -->
 <div id="page-schedule" class="page">
-  <!-- 日付ナビ（schedule時のみ表示） -->
+  <!-- 日付ナビ（常に上固定・全幅） -->
   <div id="dayNav">
     <button onclick="showDay(1)" class="active">9/12</button>
     <button onclick="showDay(2)">9/13</button>
@@ -220,7 +210,9 @@ html, body {
     <button onclick="showDay(11)">9/22</button>
   </div>
 
-  <!-- 各日程: data-bg にその日の背景URLをセット -->
+  <!-- 中身（左右にだけ余白） -->
+  <div class="scheduleBody">
+    <!-- 各日程: data-bg にその日の背景URLをセット -->
   <div id="day1" class="dayContent" style="display:block;"
        data-bg="https://images.unsplash.com/photo-1559268950-2d7ceb2efa3a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0">
   <div class="card tappable"
@@ -726,19 +718,21 @@ html, body {
        data-bg="https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg"></div>
 </div>
 
+</div>
+
 <!-- 予算ページ -->
 <div id="page-budget" class="page">
-  <iframe src="budget.html"></iframe>
+  <iframe src="budget.html" title="Budget"></iframe>
 </div>
 
 <!-- チェックリストページ -->
 <div id="page-checklist" class="page" style="padding:0;">
-  <iframe src="checklist.html" class="full-iframe"></iframe>
+  <iframe src="checklist.html" class="full-iframe" title="Checklist"></iframe>
 </div>
 
 <!-- アルバムページ -->
 <div id="page-album" class="page" style="padding:0;">
-  <iframe src="album.html" class="full-iframe"></iframe>
+  <iframe src="album.html" class="full-iframe" title="Album"></iframe>
 </div>
 
 <!-- 下部ナビ -->
