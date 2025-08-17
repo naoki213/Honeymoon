@@ -29,11 +29,10 @@ html, body {
   color: #102a43;
 }
 
-/* ページ共通 */
+/* 共通：ページ */
 .page {
   display: none;
   padding: 15px;
-  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
 }
 
 /* ===== トップページ ===== */
@@ -48,78 +47,69 @@ html, body {
   place-items: center;
   padding: env(safe-area-inset-top) 16px calc(16px + env(safe-area-inset-bottom));
 }
-#homeCard {
-  backdrop-filter: blur(0px);
-  background: rgba(255,255,255,0.0);
-  text-align: center;
-  padding: 24px;
-  border-radius: 16px;
-}
-#homeCard h1{
-  margin: 0 0 8px;
-  font-size: 36px;
-  line-height: 1.2;
-  color: #000;
-  font-weight: 800;
-  letter-spacing: .5px;
-}
+#homeCard { background: rgba(255,255,255,0.0); text-align: center; padding: 24px; border-radius: 16px; }
+#homeCard h1{ margin: 0 0 8px; font-size: 36px; line-height: 1.2; color: #000; font-weight: 800; letter-spacing: .5px; }
 #homeCard p{ margin: 6px 0; font-size: 16px; color: #000; font-weight: 600; }
-#startBtn {
-  margin-top: 20px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 800;
+#startBtn{
+  margin-top: 20px; padding: 12px 24px; font-size: 16px; font-weight: 800;
   background: #64b5f6; color: #fff; border: none; border-radius: 999px; cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0,0,0,.2);
-  transition: transform .06s, background .2s;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2); transition: transform .06s, background .2s;
 }
 #startBtn:hover { background: #42a5f5; }
 #startBtn:active { transform: translateY(1px); }
 
 /* ======== 日程ページ（背景固定＋内容だけスクロール） ======== */
+/* 固定背景（スケジュール時のみ表示） */
 #scheduleBg{
   position: fixed; inset: 0;
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; /* PCでのスクロール視差も自然に */
+  background-attachment: fixed; /* PCでの視差にも自然 */
   z-index: 0;
-  display: none; /* schedule以外では非表示 */
+  display: none;
 }
 #scheduleBg::after{
-  /* 読みやすさ用の薄い被せ（必要に応じて濃さ調整） */
-  content: ""; position: absolute; inset: 0;
-  background: rgba(0,0,0,.12);
+  content:""; position:absolute; inset:0;
+  background: rgba(0,0,0,.12); /* 文字可読性のための薄い被せ */
 }
 
 /* スクロール容器はページ側にする（bodyは固定背景の台） */
 #page-schedule{
   position: relative;
-  z-index: 1;              /* 背景より前面 */
-  height: 100dvh;          /* 画面高 */
-  overflow-y: auto;        /* ここだけスクロール */
+  z-index: 1;
+  height: 100dvh;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: transparent; /* 背景は #scheduleBg が担う */
-  padding-top: 0;
+  background: transparent;
+  padding: 0; /* ← タブを端まで広げるため0 */
 }
 
-/* 日付ナビ（スクロール容器内でsticky） */
+/* 日程タブ（上部固定・左右いっぱい） */
 #dayNav{
-  position: sticky; top: 0;
-  background: rgba(66,165,245,0.95);
+  position: sticky; top: 0; left: 0; right: 0;
+  width: 100%;
+  background: rgba(66,165,245,0.98);
+  backdrop-filter: saturate(120%) blur(0px);
   overflow-x: auto; white-space: nowrap;
-  padding: 8px; z-index: 5;
-  display: none; /* ルータでschedule時に表示 */
+  padding: calc(8px + env(safe-area-inset-top)) 12px 8px; /* ノッチ対応 */
+  margin: 0;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-#dayNav button {
-  margin: 0 5px; padding: 12px 16px; font-size: 15px;
+#dayNav button{
+  margin: 0 6px; padding: 12px 16px; font-size: 15px;
   background: #fff; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; flex-shrink: 0;
 }
-#dayNav button.active { background: #64b5f6; color: #fff; }
+#dayNav button.active{ background:#64b5f6; color:#fff; }
 
-/* 各日のラッパー（背景は透明。高さは自然に） */
+/* 内容側だけ左右余白を持たせる */
+.scheduleBody{
+  padding: 12px 15px calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
+}
+
+/* 各日のラッパー（背景は固定なので透明） */
 .dayContent{
   display: none;
-  padding: 15px;
   background: transparent;
 }
 
@@ -205,7 +195,7 @@ html, body {
 
 <!-- ===== 日程ページ（Schedule） ===== -->
 <div id="page-schedule" class="page">
-  <!-- 日付ナビ（schedule時のみ表示） -->
+  <!-- 日付ナビ（常に上固定・全幅） -->
   <div id="dayNav">
     <button onclick="showDay(1)" class="active">9/12</button>
     <button onclick="showDay(2)">9/13</button>
@@ -220,7 +210,9 @@ html, body {
     <button onclick="showDay(11)">9/22</button>
   </div>
 
-  <!-- 各日程: data-bg にその日の背景URLをセット -->
+  <!-- 中身（左右にだけ余白） -->
+  <div class="scheduleBody">
+    <!-- 各日程: data-bg にその日の背景URLをセット -->
   <div id="day1" class="dayContent" style="display:block;"
        data-bg="https://images.unsplash.com/photo-1559268950-2d7ceb2efa3a?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0">
   <div class="card tappable"
@@ -587,128 +579,132 @@ html, body {
   </div>
 
 <!-- 9/16 行程 -->
- <div id="day5" class="dayContent"
-       data-bg="https://images.unsplash.com/photo-1578001936390-497de83a50cc?q=80&w=693&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></div>
-<div class="card tappable"
-     onclick="showDetail(
-       '07:00 ホテル朝食',
-       '【ポイント】\n1日の始まりにホテルで朝食を取り、体力を整える。\nイタリアのホテルではクロワッサンやエスプレッソ、果物などが多い。',
-       '',
-       ''
-     )">
-  <h3>07:00 ホテル朝食 <span class="detail-label">☕</span></h3>
-  <p>宿泊ホテルでの朝食</p>
+<div id="day5" class="dayContent"
+     data-bg="https://images.unsplash.com/photo-1578001936390-497de83a50cc?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '07:00 ホテル朝食',
+         '【ポイント】\n1日の始まりにホテルで朝食を取り、体力を整える。\nイタリアのホテルではクロワッサンやエスプレッソ、果物などが多い。',
+         '',
+         ''
+       )">
+    <h3>07:00 ホテル朝食 <span class="detail-label">☕</span></h3>
+    <p>宿泊ホテルでの朝食</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '08:15 アカデミア美術館',
+         '【歴史】\n1784年にトスカーナ大公が設立した美術館で、ミケランジェロの「ダビデ像」で有名。\n\n【楽しみポイント】\nダビデ像は必見。ルネサンス期の絵画や彫刻も充実。朝は比較的空いているのでおすすめ。\n\n【お土産情報】\nダビデ像グッズ（Tシャツ、置物、ポストカードなど）が豊富。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Galleria+dell%27Accademia+Firenze'
+       )">
+    <h3>08:15 アカデミア美術館 <span class="detail-label">📌</span></h3>
+    <p>ミケランジェロ「ダビデ像」で有名</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '10:15 中央市場（Mercato Centrale）',
+         '【歴史】\n1891年に建てられた鉄骨構造の市場で、フィレンツェ市民の台所。\n\n【楽しみポイント】\n1階は精肉・鮮魚・チーズなどの食材、2階はフードコートで食事可能。地元の雰囲気を楽しめる。\n\n【お土産情報】\nオリーブオイル・トリュフ製品・生ハム・チーズなど。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Mercato+Centrale+Firenze'
+       )">
+    <h3>10:15 中央市場 <span class="detail-label">🍴</span></h3>
+    <p>フィレンツェ市民の台所を散策</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '12:00 ヴェッキオ橋',
+         '【歴史】\n1345年に建設されたアルノ川にかかる最古の橋。第二次世界大戦でも破壊を免れた。\n\n【楽しみポイント】\n橋の上には宝飾店が並び、昼間は観光客で賑わう。アルノ川の風景も見どころ。\n\n【お土産情報】\nジュエリーや工芸品。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Ponte+Vecchio'
+       )">
+    <h3>12:00 ヴェッキオ橋 <span class="detail-label">🌉</span></h3>
+    <p>宝飾店が並ぶフィレンツェの名所</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '12:30 ウフィツィ美術館',
+         '【歴史】\n1560年、メディチ家のコジモ1世が建てた宮殿を改装した美術館。\n\n【楽しみポイント】\nボッティチェリ「ヴィーナスの誕生」、レオナルド・ダ・ヴィンチ、ラファエロなどルネサンスの巨匠作品が勢ぞろい。\n\n【お土産情報】\n絵画モチーフの雑貨や画集。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery'
+       )">
+    <h3>12:30 ウフィツィ美術館 <span class="detail-label">🎨</span></h3>
+    <p>ルネサンス芸術の殿堂</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '14:30 Venchi（ジェラート休憩）',
+         '【歴史】\n1878年トリノ創業の老舗チョコレートブランド。\n\n【楽しみポイント】\n濃厚なチョコレートジェラートが有名。美術館鑑賞の合間に甘い休憩を。\n\n【お土産情報】\n板チョコやヘーゼルナッツ入りジャンドゥーヤ。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Venchi+Firenze'
+       )">
+    <h3>14:30 Venchi ジェラート休憩 <span class="detail-label">🍨</span></h3>
+    <p>チョコレートとジェラートの老舗</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '15:00 サンタ・マリア・ノヴェッラ教会 & 薬局',
+         '【歴史】\n13世紀建築のゴシック様式教会。薬局は世界最古の薬局のひとつで1221年に設立。\n\n【楽しみポイント】\n教会内部のフレスコ画鑑賞。薬局では石鹸・香水・ハーブ製品が購入可能。\n\n【お土産情報】\nポプリ・ローズ水・石鹸。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Santa+Maria+Novella'
+       )">
+    <h3>15:00 サンタ・マリア・ノヴェッラ教会・薬局 <span class="detail-label">⛪</span></h3>
+    <p>歴史ある教会と世界最古の薬局</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '16:30 ホテル戻り',
+         'チェックアウト・休憩。\nヴェネチア移動に備えて荷物整理。',
+         '',
+         ''
+       )">
+    <h3>16:30 ホテルへ戻る <span class="detail-label">🏨</span></h3>
+    <p>休憩と荷物整理</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '17:39 フィレンツェ発 → ヴェネチア着19:42',
+         'トレニタリア（Frecciarossaなど）で約2時間の移動。\n事前予約が推奨。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Venezia+Santa+Lucia'
+       )">
+    <h3>17:39 ヴェネチアへ移動 <span class="detail-label">🚆</span></h3>
+    <p>19:42 ヴェネチア着</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '20:00 Hotel Lugano Torretta',
+         '4つ星ホテルで快適に滞在可能。\n駅近でアクセス良好。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Hotel+Lugano+Torretta'
+       )">
+    <h3>20:00 ホテルチェックイン <span class="detail-label">🏨</span></h3>
+    <p>Hotel Lugano Torretta</p>
+  </div>
+
+  <div class="card tappable"
+       onclick="showDetail(
+         '21:30 夜ご飯（元気があれば） Ristorantino Da Carla',
+         '【歴史】\nヴェネチアの小さなトラットリアで、地元料理を提供。\n\n【楽しみポイント】\n海鮮料理・リゾット・地元ワインが楽しめる。\n\n【お土産情報】\nおすすめは地元のワインやオリーブオイル。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Ristorantino+Da+Carla+Venezia'
+       )">
+    <h3>21:30 夜ご飯候補 <span class="detail-label">🍽️</span></h3>
+    <p>Ristorantino Da Carla</p>
+  </div>
+
 </div>
 
-<div class="card tappable"
-     onclick="showDetail(
-       '08:15 アカデミア美術館',
-       '【歴史】\n1784年にトスカーナ大公が設立した美術館で、ミケランジェロの「ダビデ像」で有名。\n\n【楽しみポイント】\nダビデ像は必見。ルネサンス期の絵画や彫刻も充実。朝は比較的空いているのでおすすめ。\n\n【お土産情報】\nダビデ像グッズ（Tシャツ、置物、ポストカードなど）が豊富。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Galleria+dell%27Accademia+Firenze'
-     )">
-  <h3>08:15 アカデミア美術館 <span class="detail-label">📌</span></h3>
-  <p>ミケランジェロ「ダビデ像」で有名</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '10:15 中央市場（Mercato Centrale）',
-       '【歴史】\n1891年に建てられた鉄骨構造の市場で、フィレンツェ市民の台所。\n\n【楽しみポイント】\n1階は精肉・鮮魚・チーズなどの食材、2階はフードコートで食事可能。地元の雰囲気を楽しめる。\n\n【お土産情報】\nオリーブオイル・トリュフ製品・生ハム・チーズなど。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Mercato+Centrale+Firenze'
-     )">
-  <h3>10:15 中央市場 <span class="detail-label">🍴</span></h3>
-  <p>フィレンツェ市民の台所を散策</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '12:00 ヴェッキオ橋',
-       '【歴史】\n1345年に建設されたアルノ川にかかる最古の橋。第二次世界大戦でも破壊を免れた。\n\n【楽しみポイント】\n橋の上には宝飾店が並び、昼間は観光客で賑わう。アルノ川の風景も見どころ。\n\n【お土産情報】\nジュエリーや工芸品。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Ponte+Vecchio'
-     )">
-  <h3>12:00 ヴェッキオ橋 <span class="detail-label">🌉</span></h3>
-  <p>宝飾店が並ぶフィレンツェの名所</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '12:30 ウフィツィ美術館',
-       '【歴史】\n1560年、メディチ家のコジモ1世が建てた宮殿を改装した美術館。\n\n【楽しみポイント】\nボッティチェリ「ヴィーナスの誕生」、レオナルド・ダ・ヴィンチ、ラファエロなどルネサンスの巨匠作品が勢ぞろい。\n\n【お土産情報】\n絵画モチーフの雑貨や画集。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery'
-     )">
-  <h3>12:30 ウフィツィ美術館 <span class="detail-label">🎨</span></h3>
-  <p>ルネサンス芸術の殿堂</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '14:30 Venchi（ジェラート休憩）',
-       '【歴史】\n1878年トリノ創業の老舗チョコレートブランド。\n\n【楽しみポイント】\n濃厚なチョコレートジェラートが有名。美術館鑑賞の合間に甘い休憩を。\n\n【お土産情報】\n板チョコやヘーゼルナッツ入りジャンドゥーヤ。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Venchi+Firenze'
-     )">
-  <h3>14:30 Venchi ジェラート休憩 <span class="detail-label">🍨</span></h3>
-  <p>チョコレートとジェラートの老舗</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '15:00 サンタ・マリア・ノヴェッラ教会 & 薬局',
-       '【歴史】\n13世紀建築のゴシック様式教会。薬局は世界最古の薬局のひとつで1221年に設立。\n\n【楽しみポイント】\n教会内部のフレスコ画鑑賞。薬局では石鹸・香水・ハーブ製品が購入可能。\n\n【お土産情報】\nポプリ・ローズ水・石鹸。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Santa+Maria+Novella'
-     )">
-  <h3>15:00 サンタ・マリア・ノヴェッラ教会・薬局 <span class="detail-label">⛪</span></h3>
-  <p>歴史ある教会と世界最古の薬局</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '16:30 ホテル戻り',
-       'チェックアウト・休憩。\nヴェネチア移動に備えて荷物整理。',
-       '',
-       ''
-     )">
-  <h3>16:30 ホテルへ戻る <span class="detail-label">🏨</span></h3>
-  <p>休憩と荷物整理</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '17:39 フィレンツェ発 → ヴェネチア着19:42',
-       'トレニタリア（Frecciarossaなど）で約2時間の移動。\n事前予約が推奨。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Venezia+Santa+Lucia'
-     )">
-  <h3>17:39 ヴェネチアへ移動 <span class="detail-label">🚆</span></h3>
-  <p>19:42 ヴェネチア着</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '20:00 Hotel Lugano Torretta',
-       '4つ星ホテルで快適に滞在可能。\n駅近でアクセス良好。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Hotel+Lugano+Torretta'
-     )">
-  <h3>20:00 ホテルチェックイン <span class="detail-label">🏨</span></h3>
-  <p>Hotel Lugano Torretta</p>
-</div>
-
-<div class="card tappable"
-     onclick="showDetail(
-       '21:30 夜ご飯（元気があれば） Ristorantino Da Carla',
-       '【歴史】\nヴェネチアの小さなトラットリアで、地元料理を提供。\n\n【楽しみポイント】\n海鮮料理・リゾット・地元ワインが楽しめる。\n\n【お土産情報】\nおすすめは地元のワインやオリーブオイル。',
-       '',
-       'https://www.google.com/maps/search/?api=1&query=Ristorantino+Da+Carla+Venezia'
-     )">
-  <h3>21:30 夜ご飯候補 <span class="detail-label">🍽️</span></h3>
-  <p>Ristorantino Da Carla</p>
-</div>
 
   </div>
 
@@ -726,19 +722,21 @@ html, body {
        data-bg="https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg"></div>
 </div>
 
+</div>
+
 <!-- 予算ページ -->
 <div id="page-budget" class="page">
-  <iframe src="budget.html"></iframe>
+  <iframe src="budget.html" title="Budget"></iframe>
 </div>
 
 <!-- チェックリストページ -->
 <div id="page-checklist" class="page" style="padding:0;">
-  <iframe src="checklist.html" class="full-iframe"></iframe>
+  <iframe src="checklist.html" class="full-iframe" title="Checklist"></iframe>
 </div>
 
 <!-- アルバムページ -->
 <div id="page-album" class="page" style="padding:0;">
-  <iframe src="album.html" class="full-iframe"></iframe>
+  <iframe src="album.html" class="full-iframe" title="Album"></iframe>
 </div>
 
 <!-- 下部ナビ -->
