@@ -126,19 +126,37 @@ html, body {
 .detail-label { font-size: 14px; background: transparent; color: #ff9800; margin-left: 6px; }
 
 /* 下部ナビ（safe-area対応） */
+/* 下部ナビ（safe-area対応の正しいやり方） */
 #bottomNav{
-  position: fixed; bottom: 0; left: 0; width: 100%;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  /* 高さに safe-area を含める */
+  height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
   background: rgba(227,242,253,0.95);
-  display: none; /* ルータでhome以外のとき表示 */
   border-top: 1px solid #bbdefb;
-  height: var(--bottom-nav-h);
+  display: none;               /* ルーターで切替 */
+  z-index: 1000;               /* タップ負け防止で少し上げる */
+  /* ↓ これを削除（ズレの原因）
   padding-bottom: env(safe-area-inset-bottom);
-  z-index: 10;
+  */
 }
+
 #bottomNav button{
-  flex: 1; padding: 14px; font-size: 15px; border: none; background: transparent; cursor: pointer;
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+
+  /* 上下パディングは好みで調整。下側に safe-area を足してタップ域を確保 */
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
 }
-#bottomNav button.active { background: #64b5f6; color: #fff; }
+
+#bottomNav button.active{
+  background: #64b5f6;
+  color: #fff;
+}
+
 
 /* モーダル */
 #detailModal{
