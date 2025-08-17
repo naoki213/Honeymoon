@@ -586,120 +586,129 @@ html, body {
 
   </div>
 
- <!-- ===== 5日目（9/16 火） フィレンツェ観光 → ヴェネツィア移動 ===== -->
-<div id="day5" class="dayContent">
+<!-- 9/16 行程 -->
+ <div id="day5" class="dayContent"
+       data-bg="https://images.unsplash.com/photo-1578001936390-497de83a50cc?q=80&w=693&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></div>
+<div class="card tappable"
+     onclick="showDetail(
+       '07:00 ホテル朝食',
+       '【ポイント】\n1日の始まりにホテルで朝食を取り、体力を整える。\nイタリアのホテルではクロワッサンやエスプレッソ、果物などが多い。',
+       '',
+       ''
+     )">
+  <h3>07:00 ホテル朝食 <span class="detail-label">☕</span></h3>
+  <p>宿泊ホテルでの朝食</p>
+</div>
 
-  <!-- 07:00 ホテルで朝食 -->
-  <div class="card">
-    <h3>07:00 ホテルで朝食</h3>
-    <p>軽めにエネルギー補給。午前の美術館に備えて早め行動。</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '08:15 アカデミア美術館',
+       '【歴史】\n1784年にトスカーナ大公が設立した美術館で、ミケランジェロの「ダビデ像」で有名。\n\n【楽しみポイント】\nダビデ像は必見。ルネサンス期の絵画や彫刻も充実。朝は比較的空いているのでおすすめ。\n\n【お土産情報】\nダビデ像グッズ（Tシャツ、置物、ポストカードなど）が豊富。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Galleria+dell%27Accademia+Firenze'
+     )">
+  <h3>08:15 アカデミア美術館 <span class="detail-label">📌</span></h3>
+  <p>ミケランジェロ「ダビデ像」で有名</p>
+</div>
 
-  <!-- 08:15 アカデミア美術館（画像・マップあとで） -->
-  <!-- 画像URLを第3引数、マップURLを第4引数へ -->
-  <div class="card tappable" onclick="showDetail(
-    '08:15 アカデミア美術館',
-    '【歴史】1784年に設立された美術学校の付属機関を母体とする美術館。19世紀以降に収蔵が進み、ミケランジェロの『ダヴィデ像』が核となって世界的名声を得た。\\n\\n【楽しみポイント】入ってすぐの回廊に立つ原寸の『ダヴィデ像』は圧巻。筋肉や血管の表現を間近で観察できる。未完の彫刻群や宗教画も見応え十分で、ルネサンス彫刻の進化を体感できる。\\n\\n【豆知識・お土産】ショップではダヴィデのミニ像、ポストカード、図録が充実。事前予約で入場がスムーズ。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>08:15 アカデミア美術館 <span class="detail-label">📌</span></h3>
-    <p>ダヴィデ像の迫力を間近で</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '10:15 中央市場（Mercato Centrale）',
+       '【歴史】\n1891年に建てられた鉄骨構造の市場で、フィレンツェ市民の台所。\n\n【楽しみポイント】\n1階は精肉・鮮魚・チーズなどの食材、2階はフードコートで食事可能。地元の雰囲気を楽しめる。\n\n【お土産情報】\nオリーブオイル・トリュフ製品・生ハム・チーズなど。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Mercato+Centrale+Firenze'
+     )">
+  <h3>10:15 中央市場 <span class="detail-label">🍴</span></h3>
+  <p>フィレンツェ市民の台所を散策</p>
+</div>
 
-  <!-- 10:15 Mercato Centrale Firenze（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '10:15 Mercato Centrale Firenze（中央市場）',
-    '【歴史】19世紀後半に整備された市場で、一階は食材、二階はフードホールとして機能。地元の食文化と観光のハブ。\\n\\n【楽しみポイント】生ハム・チーズ・総菜・パン・スイーツまで勢揃い。立ち食いでパニーニやパスタ、ジェラートも楽しめる。\\n\\n【お土産】オリーブオイル、はちみつ、トスカーナワイン、ドライトマトなど軽くて喜ばれる品が豊富。エコバッグ持参が便利。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>10:15 中央市場ぶらり <span class="detail-label">🍴</span></h3>
-    <p>食と土産のワンダーランド</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '12:00 ヴェッキオ橋',
+       '【歴史】\n1345年に建設されたアルノ川にかかる最古の橋。第二次世界大戦でも破壊を免れた。\n\n【楽しみポイント】\n橋の上には宝飾店が並び、昼間は観光客で賑わう。アルノ川の風景も見どころ。\n\n【お土産情報】\nジュエリーや工芸品。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Ponte+Vecchio'
+     )">
+  <h3>12:00 ヴェッキオ橋 <span class="detail-label">🌉</span></h3>
+  <p>宝飾店が並ぶフィレンツェの名所</p>
+</div>
 
-  <!-- 12:00 ヴェッキオ橋（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '12:00 ヴェッキオ橋',
-    '【歴史】1345年再建の中世石橋。メディチ家の繁栄とともに橋上に商店が並び、現在は金細工店が多い独特の景観。\\n\\n【楽しみポイント】アルノ川と橋のシルエットは写真映え抜群。欄干から川を眺める定点フォト、夕暮れの空色グラデーションも美しい。\\n\\n【お土産】小ぶりのシルバーアクセやチャームは記念に最適。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>12:00 ヴェッキオ橋 <span class="detail-label">🌉</span></h3>
-    <p>宝飾店が並ぶ中世の橋</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '12:30 ウフィツィ美術館',
+       '【歴史】\n1560年、メディチ家のコジモ1世が建てた宮殿を改装した美術館。\n\n【楽しみポイント】\nボッティチェリ「ヴィーナスの誕生」、レオナルド・ダ・ヴィンチ、ラファエロなどルネサンスの巨匠作品が勢ぞろい。\n\n【お土産情報】\n絵画モチーフの雑貨や画集。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery'
+     )">
+  <h3>12:30 ウフィツィ美術館 <span class="detail-label">🎨</span></h3>
+  <p>ルネサンス芸術の殿堂</p>
+</div>
 
-  <!-- 12:30 ウフィツィ美術館（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '12:30 ウフィツィ美術館',
-    '【歴史】メディチ家の事務所として16世紀に建設。18世紀に公開が進み、世界最古級の美術館へ。\\n\\n【楽しみポイント】ボッティチェリ『春』『ヴィーナスの誕生』、レオナルド、ラファエロ、ミケランジェロなどルネサンス巨匠の名画を網羅。時系列に鑑賞すると理解が深まる。\\n\\n【豆知識・お土産】人気館のため予約推奨。ショップのグッズはセンス良し、名画モチーフの小物が豊富。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>12:30 ウフィツィ美術館 <span class="detail-label">🖼</span></h3>
-    <p>ルネサンスの至宝を一気見</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '14:30 Venchi（ジェラート休憩）',
+       '【歴史】\n1878年トリノ創業の老舗チョコレートブランド。\n\n【楽しみポイント】\n濃厚なチョコレートジェラートが有名。美術館鑑賞の合間に甘い休憩を。\n\n【お土産情報】\n板チョコやヘーゼルナッツ入りジャンドゥーヤ。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Venchi+Firenze'
+     )">
+  <h3>14:30 Venchi ジェラート休憩 <span class="detail-label">🍨</span></h3>
+  <p>チョコレートとジェラートの老舗</p>
+</div>
 
-  <!-- 14:30 Venchi（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '14:30 Venchi Gelato & Chocolate',
-    '【ブランド】1878年創業の老舗チョコレートブランド。伝統と素材感にこだわるプレミアムなジェラートが人気。\\n\\n【楽しみポイント】濃厚系（チョコ、ヘーゼルナッツ）とフルーツ系の組み合わせが◎。店内のチョコレートウォールは写真映え。\\n\\n【お土産】プラリネや板チョコ、ギフト缶は軽くて配りやすい。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>14:30 ジェラート休憩 <span class="detail-label">🍦</span></h3>
-    <p>Venchiで甘いブレイク</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '15:00 サンタ・マリア・ノヴェッラ教会 & 薬局',
+       '【歴史】\n13世紀建築のゴシック様式教会。薬局は世界最古の薬局のひとつで1221年に設立。\n\n【楽しみポイント】\n教会内部のフレスコ画鑑賞。薬局では石鹸・香水・ハーブ製品が購入可能。\n\n【お土産情報】\nポプリ・ローズ水・石鹸。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Santa+Maria+Novella'
+     )">
+  <h3>15:00 サンタ・マリア・ノヴェッラ教会・薬局 <span class="detail-label">⛪</span></h3>
+  <p>歴史ある教会と世界最古の薬局</p>
+</div>
 
-  <!-- 15:00 サンタ・マリア・ノヴェッラ教会・薬局（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '15:00 サンタ・マリア・ノヴェッラ教会 & 薬局',
-    '【歴史】13〜15世紀に整備されたドミニコ会の教会。最古級の薬局（Officina Profumo-Farmaceutica）は香水・化粧水で名高い。\\n\\n【楽しみポイント】教会はフレスコ画と回廊が美しく、薬局は博物館のような内装でショッピングも楽しい。\\n\\n【お土産】石鹸、オーデコロン、バームが定番。香りのサンプルで好みを見つけよう。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>15:00 ノヴェッラ教会・薬局 <span class="detail-label">⛪</span></h3>
-    <p>アート鑑賞と香りの名店</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '16:30 ホテル戻り',
+       'チェックアウト・休憩。\nヴェネチア移動に備えて荷物整理。',
+       '',
+       ''
+     )">
+  <h3>16:30 ホテルへ戻る <span class="detail-label">🏨</span></h3>
+  <p>休憩と荷物整理</p>
+</div>
 
-  <!-- 16:30 ホテルに戻る -->
-  <div class="card">
-    <h3>16:30 ホテルに戻る</h3>
-    <p>荷物最終チェック。駅までのルートと乗車ホームを確認。</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '17:39 フィレンツェ発 → ヴェネチア着19:42',
+       'トレニタリア（Frecciarossaなど）で約2時間の移動。\n事前予約が推奨。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Venezia+Santa+Lucia'
+     )">
+  <h3>17:39 ヴェネチアへ移動 <span class="detail-label">🚆</span></h3>
+  <p>19:42 ヴェネチア着</p>
+</div>
 
-  <!-- 17:39 フィレンツェ → ヴェネツィア（19:42着） -->
-  <div class="card tappable" onclick="showDetail(
-    '17:39 フィレンツェ発 → 19:42 ヴェネツィア着（高速）',
-    'Frecciarossa/Italo など高速列車で約2時間。出発30分前には駅へ。荷物置き場確保＆軽食・水の調達を忘れずに。到着はVenezia S. Lucia想定、夜景さんぽも◎。',
-    '',  /* ← 画像URL（列車or駅） */
-    ''   /* ← 経路・駅マップURL */
-  )">
-    <h3>17:39 高速列車でヴェネツィアへ <span class="detail-label">🚄</span></h3>
-    <p>19:42 到着予定</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '20:00 Hotel Lugano Torretta',
+       '4つ星ホテルで快適に滞在可能。\n駅近でアクセス良好。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Hotel+Lugano+Torretta'
+     )">
+  <h3>20:00 ホテルチェックイン <span class="detail-label">🏨</span></h3>
+  <p>Hotel Lugano Torretta</p>
+</div>
 
-  <!-- 20:00 Hotel Lugano Torretta（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '20:00 チェックイン：Hotel Lugano Torretta（4★）',
-    '【拠点性】メストレ地区で駅・バス至近。価格と快適さのバランス良。\\n\\n【ポイント】清潔・静音・機能的な客室で移動疲れをリセット。翌日の本島観光に向け、早めの就寝も◎。',
-    '',  /* ← ホテル外観/客室の画像URL */
-    ''   /* ← ホテルのGoogleマップURL */
-  )">
-    <h3>20:00 【泊】Hotel Lugano Torretta <span class="detail-label">🏨</span></h3>
-    <p>本島アクセス良好の4つ星</p>
-  </div>
-
-  <!-- 21:30 夜ご飯（元気があれば）Ristorantino Da Carla（画像・マップあとで） -->
-  <div class="card tappable" onclick="showDetail(
-    '21:30 夜ご飯（元気があれば）：Ristorantino Da Carla',
-    '【雰囲気】小ぢんまりしたローカルレストラン。家庭的な温かみのある接客で、遅めの時間帯でも落ち着いて食事ができる。\\n\\n【おすすめ】海鮮パスタや日替わりメニュー、トスカーナの素朴な味わい。地元ワインと相性抜群。\\n\\n【メモ】混雑時は待ちが出るため、訪問前に営業時間・混雑状況を確認すると安心。',
-    '',  /* ← 画像URL */
-    ''   /* ← GoogleマップURL */
-  )">
-    <h3>21:30 夜ご飯（体力次第） <span class="detail-label">🍷</span></h3>
-    <p>Ristorantino Da Carla</p>
-  </div>
+<div class="card tappable"
+     onclick="showDetail(
+       '21:30 夜ご飯（元気があれば） Ristorantino Da Carla',
+       '【歴史】\nヴェネチアの小さなトラットリアで、地元料理を提供。\n\n【楽しみポイント】\n海鮮料理・リゾット・地元ワインが楽しめる。\n\n【お土産情報】\nおすすめは地元のワインやオリーブオイル。',
+       '',
+       'https://www.google.com/maps/search/?api=1&query=Ristorantino+Da+Carla+Venezia'
+     )">
+  <h3>21:30 夜ご飯候補 <span class="detail-label">🍽️</span></h3>
+  <p>Ristorantino Da Carla</p>
+</div>
 
   </div>
 
