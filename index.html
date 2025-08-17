@@ -33,8 +33,9 @@ html, body {
 .page {
   display: none;
   padding: 15px;
-  margin-bottom: var(--bottom-nav-h);
 }
+
+  
 
 /* ===== トップページ ===== */
 #page-home {
@@ -180,6 +181,19 @@ html, body {
   border: none;
   display: block;
 }
+  /* 全ページに下部ナビ分の余白を確保（最小修正版） */
+.page {
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
+}
+
+.dayContent {
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
+}
+
+.dayContent .card:last-child {
+  margin-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 24px);
+}
+
 </style>
 </head>
 <body>
