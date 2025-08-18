@@ -204,6 +204,22 @@ html, body {
 html {
   scrollbar-gutter: stable both-edges; /* スクロールバーで幅が変わらないように */
 }
+.card {
+  background: rgba(255, 255, 255, 0.6);   /* 半透明の白 */
+  backdrop-filter: blur(6px);             /* ガラス風：背景をぼかす */
+  -webkit-backdrop-filter: blur(6px);     /* Safari用 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* カードを浮かせる影 */
+  border-radius: 16px;                    /* 丸みを付ける */
+  padding: 16px;
+  margin: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* タップやホバー時に少し浮き上がる */
+.card:hover, .card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
 
 </style>
 </head>
