@@ -1239,50 +1239,63 @@ html {
   </div>
 </div>
 
+
 <div id="day11" class="dayContent"
      data-bg="https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg">
 
-  <!-- 午前：ソウル観光（軽め） -->
+  <!-- 午前：ソウル観光（短時間） -->
   <div class="card tappable"
        onclick="showDetail(
-         '午前：ソウル観光（軽め）',
-         '【候補】\n北村韓屋村〜三清洞／仁寺洞で伝統雑貨とお茶／カロスキルでコスメ＆カフェ。\n出発時刻に合わせてコンパクトに。',
+         '午前：ソウル観光（短時間）',
+         '【候補】\n・北村韓屋村（伝統家屋とカフェ）\n・仁寺洞（伝統雑貨・韓国茶）\n・南大門市場（ショッピング）\n※昼過ぎにはホテルに戻り、空港へ向けて出発。',
          '',
          'https://www.google.com/maps/search/?api=1&query=Bukchon%20Hanok%20Village'
        )">
     <h3>AM ソウル観光 <span class="detail-label">🛍️</span></h3>
-    <p>ショッピング＆カフェ中心に調整</p>
+    <p>ショッピング＆カフェを短時間で</p>
   </div>
 
-  <!-- 10:30 ホテル→仁川T1 -->
+  <!-- 12:00 ホテル出発 → 仁川T1へ -->
   <div class="card tappable"
        onclick="showDetail(
-         '10:30 ホテル出発 → 仁川空港T1へ',
-         '13:55発に向け移動開始（国際線は2〜3時間前目安）。\n【アクセス例】\n・空港バス6001：明洞→T1\n・AREX（一般）：ソウル駅→T1\n・タクシー（渋滞注意）',
+         '12:00 ホテル出発 → 仁川空港T1へ',
+         '【アクセス例】\n・空港バス6001（明洞→仁川T1 約70〜80分）\n・AREX（ソウル駅経由）→仁川T1 約60分\n・タクシー：約60〜80分（渋滞注意）\n\n13:55ごろ空港到着を目安に移動開始。',
          '',
          'https://www.google.com/maps/search/?api=1&query=Incheon%20Airport%20Terminal%201'
        )">
-    <h3>10:30 空港へ移動 <span class="detail-label">🧳</span></h3>
-    <p>仁川空港T1へ（余裕を持って）</p>
+    <h3>12:00 ホテル出発 <span class="detail-label">🧳</span></h3>
+    <p>仁川空港T1へ移動</p>
   </div>
 
-  <!-- 13:55 仁川T1 発 -->
+  <!-- 13:55 仁川空港到着 -->
   <div class="card tappable"
        onclick="showDetail(
-         '13:55 仁川空港T1 発',
-         'チェックイン・出国・搭乗口へ。\n手荷物液体ルール・免税手続きは早めに。',
+         '13:55 仁川空港T1 到着',
+         'チェックイン・出国審査・免税店散策。\n搭乗口を早めに確認しておくと安心。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Incheon%20International%20Airport'
+       )">
+    <h3>13:55 仁川T1 着 <span class="detail-label">🛬</span></h3>
+    <p>チェックイン・免税店散策</p>
+  </div>
+
+  <!-- 15:55 仁川発 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '15:55 仁川空港 発',
+         '出国審査・搭乗口へ。\nパスポート・搭乗券・免税書類を確認。',
          '',
          ''
        )">
-    <h3>13:55 ICN T1 発 <span class="detail-label">🛫</span></h3>
-    <p>関空へ</p>
+    <h3>15:55 ICN 発 <span class="detail-label">🛫</span></h3>
+    <p>関空へフライト</p>
   </div>
 
-  <!-- 18:05 関空T1 着 -->
+  <!-- 18:05 関空着 -->
   <div class="card tappable"
        onclick="showDetail(
-         '18:05 関西国際空港T1 到着',
-         '入国・荷物受け取り後、鉄道駅へ（連絡通路直結）。\nこの後、19:30発想定で高井田へ移動。',
+         '18:05 関空T1 着',
+         '入国・荷物受け取り後、鉄道駅へ（連絡通路直結）。\nこの後 19:30発想定で高井田へ。',
          '',
          'https://www.google.com/maps/search/?api=1&query=Kansai%20International%20Airport%20Terminal%201'
        )">
@@ -1290,35 +1303,23 @@ html {
     <p>鉄道駅は連絡通路直結</p>
   </div>
 
-  <!-- 19:30 関空発 → 高井田（代表ルート） -->
+  <!-- 19:30 関空発 → 高井田 -->
   <div class="card tappable"
        onclick="showDetail(
-         '19:30 関空 → 高井田（代表ルート）',
-         '【南海ルート】\n19:30 関西空港→（南海 ラピート or 空港急行）→ なんば\nなんば→（Osaka Metro 御堂筋線）→ 本町\n本町→（中央線）→ 高井田\n所要：約70分前後（接続次第）\n\n【JRルート】\n19:30 関西空港→（JR 関空快速）→ 弁天町\n弁天町→（中央線直通）→ 高井田\n所要：約70〜80分（接続次第）\n\n※最新ダイヤは当日検索を。',
+         '19:30 関空 → 高井田',
+         '【南海ルート】\n関西空港→（ラピート/空港急行 約34〜45分）→なんば\nなんば→御堂筋線→本町→中央線→高井田\n\n【JRルート】\n関空快速→弁天町→中央線直通→高井田\n\n所要：約70〜80分。最新ダイヤは当日検索を。',
          '',
          'https://transit.yahoo.co.jp/'
        )">
-    <h3>19:30 出発 想定ルート <span class="detail-label">🚆</span></h3>
-    <p>南海 or JR で高井田へ</p>
-  </div>
-
-  <!-- 代表的な時刻例（目安） -->
-  <div class="card tappable"
-       onclick="showDetail(
-         '代表的な時刻例（目安）',
-         '【例：南海→大阪メトロ】\n関西空港 19:34 発 空港急行 → なんば 20:21 着\nなんば 20:25 御堂筋線 → 本町 20:28 着\n本町 20:31 中央線 → 高井田 20:46 着（目安）\n\n【例：JR→中央線】\n関西空港 19:32 発 関空快速 → 弁天町 20:38 着\n弁天町 20:41 中央線直通 → 高井田 20:56 着（目安）\n\n※曜日・運用で変動あり。IC運賃・経路はその場で再確認を。',
-         '',
-         'https://www.navitime.co.jp/'
-       )">
-    <h3>代表的な時刻例 <span class="detail-label">🕒</span></h3>
-    <p>最新ダイヤは当日チェック</p>
+    <h3>19:30 関空→高井田 <span class="detail-label">🚆</span></h3>
+    <p>所要 約70〜80分</p>
   </div>
 
   <!-- 帰宅 -->
   <div class="card tappable"
        onclick="showDetail(
          '帰宅',
-         '到着後は荷解き前に貴重品とお土産の仕分けを。\nレシートや免税書類はまとめて保管しておくと便利。',
+         '荷解き前にお土産・貴重品の整理。\n免税関連のレシートはまとめて保管。',
          '',
          ''
        )">
