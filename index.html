@@ -1187,10 +1187,146 @@ html {
 
 </div>
 
-  <div id="day10" class="dayContent"
-       data-bg="https://as1.ftcdn.net/v2/jpg/05/69/39/60/1000_F_569396098_hqZEijrVB7OYM9D3QhXQrmOd9kWUUhca.jpg"></div>
-  <div id="day11" class="dayContent"
-       data-bg="https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg"></div>
+ <div id="day10" class="dayContent"
+     data-bg="https://images.unsplash.com/photo-1507812984078-917a274065be?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+
+  <!-- 16:25 仁川到着 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '16:25 仁川国際空港（ICN）到着',
+         '入国審査・荷物受取・通信（SIM/eSIM/Wi-Fi）\nT-moneyや交通系アプリを整えておくと便利。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Incheon%20International%20Airport%20Terminal%201'
+       )">
+    <h3>16:25 仁川（ICN）到着 <span class="detail-label">🛬</span></h3>
+    <p>到着手続き＆通信確保</p>
+  </div>
+
+  <!-- 空港 → ソウルプリンスホテル -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '空港 → ソウルプリンスホテル（明洞）',
+         '【行き方候補】\n・空港バス6001：明洞方面（ホテル至近の停留所あり）\n・AREX（一般）→ソウル駅→地下鉄4号線 明洞駅（徒歩圏）\n・タクシー：約60〜80分（渋滞次第）\nチェックイン後は周辺散策へ。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Seoul%20Prince%20Hotel%20Myeongdong'
+       )">
+    <h3>ホテルへ移動 <span class="detail-label">🚐</span></h3>
+    <p>ソウルプリンスホテル（明洞）</p>
+  </div>
+
+  <!-- 夜：明洞でごはん -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '夜：明洞でごはん',
+         '【食べ歩き候補】\nキンパ／トッポッキ／チキン／ホットク／タッカンマリ\n【Tips】レート表示・手数料の確認、スリ対策も忘れずに。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Myeongdong'
+       )">
+    <h3>夕食：明洞ストリート <span class="detail-label">🍢</span></h3>
+    <p>屋台グルメ＆ショッピング</p>
+  </div>
+
+  <!-- 翌日のためのアクセスメモ：ホテル→仁川T1（空港バス/AREX） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '明日用メモ：ホテル→仁川T1（空港バス/AREX）',
+         '【空港バス（6001系統）】\n明洞駅周辺の停留所からT1直行（本数は時間帯で変動）。\n【AREX（空港鉄道）】\nホテル→地下鉄でソウル駅→AREXでT1へ（約1時間）。\n※時刻・運賃は当日再確認を。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=AREX%20Seoul%20Station'
+       )">
+    <h3>ホテル→仁川T1 アクセス <span class="detail-label">📌</span></h3>
+    <p>空港バス or 地下鉄＋AREX</p>
+  </div>
+</div>
+
+<div id="day11" class="dayContent"
+     data-bg="https://cdn.audleytravel.com/350/460/79/15982685-bongeunsa-temple-seoul.jpg">
+
+  <!-- 午前：ソウル観光（軽め） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '午前：ソウル観光（軽め）',
+         '【候補】\n北村韓屋村〜三清洞／仁寺洞で伝統雑貨とお茶／カロスキルでコスメ＆カフェ。\n出発時刻に合わせてコンパクトに。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Bukchon%20Hanok%20Village'
+       )">
+    <h3>AM ソウル観光 <span class="detail-label">🛍️</span></h3>
+    <p>ショッピング＆カフェ中心に調整</p>
+  </div>
+
+  <!-- 10:30 ホテル→仁川T1 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '10:30 ホテル出発 → 仁川空港T1へ',
+         '13:55発に向け移動開始（国際線は2〜3時間前目安）。\n【アクセス例】\n・空港バス6001：明洞→T1\n・AREX（一般）：ソウル駅→T1\n・タクシー（渋滞注意）',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Incheon%20Airport%20Terminal%201'
+       )">
+    <h3>10:30 空港へ移動 <span class="detail-label">🧳</span></h3>
+    <p>仁川空港T1へ（余裕を持って）</p>
+  </div>
+
+  <!-- 13:55 仁川T1 発 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '13:55 仁川空港T1 発',
+         'チェックイン・出国・搭乗口へ。\n手荷物液体ルール・免税手続きは早めに。',
+         '',
+         ''
+       )">
+    <h3>13:55 ICN T1 発 <span class="detail-label">🛫</span></h3>
+    <p>関空へ</p>
+  </div>
+
+  <!-- 18:05 関空T1 着 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '18:05 関西国際空港T1 到着',
+         '入国・荷物受け取り後、鉄道駅へ（連絡通路直結）。\nこの後、19:30発想定で高井田へ移動。',
+         '',
+         'https://www.google.com/maps/search/?api=1&query=Kansai%20International%20Airport%20Terminal%201'
+       )">
+    <h3>18:05 関空T1 着 <span class="detail-label">🛬</span></h3>
+    <p>鉄道駅は連絡通路直結</p>
+  </div>
+
+  <!-- 19:30 関空発 → 高井田（代表ルート） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '19:30 関空 → 高井田（代表ルート）',
+         '【南海ルート】\n19:30 関西空港→（南海 ラピート or 空港急行）→ なんば\nなんば→（Osaka Metro 御堂筋線）→ 本町\n本町→（中央線）→ 高井田\n所要：約70分前後（接続次第）\n\n【JRルート】\n19:30 関西空港→（JR 関空快速）→ 弁天町\n弁天町→（中央線直通）→ 高井田\n所要：約70〜80分（接続次第）\n\n※最新ダイヤは当日検索を。',
+         '',
+         'https://transit.yahoo.co.jp/'
+       )">
+    <h3>19:30 出発 想定ルート <span class="detail-label">🚆</span></h3>
+    <p>南海 or JR で高井田へ</p>
+  </div>
+
+  <!-- 代表的な時刻例（目安） -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '代表的な時刻例（目安）',
+         '【例：南海→大阪メトロ】\n関西空港 19:34 発 空港急行 → なんば 20:21 着\nなんば 20:25 御堂筋線 → 本町 20:28 着\n本町 20:31 中央線 → 高井田 20:46 着（目安）\n\n【例：JR→中央線】\n関西空港 19:32 発 関空快速 → 弁天町 20:38 着\n弁天町 20:41 中央線直通 → 高井田 20:56 着（目安）\n\n※曜日・運用で変動あり。IC運賃・経路はその場で再確認を。',
+         '',
+         'https://www.navitime.co.jp/'
+       )">
+    <h3>代表的な時刻例 <span class="detail-label">🕒</span></h3>
+    <p>最新ダイヤは当日チェック</p>
+  </div>
+
+  <!-- 帰宅 -->
+  <div class="card tappable"
+       onclick="showDetail(
+         '帰宅',
+         '到着後は荷解き前に貴重品とお土産の仕分けを。\nレシートや免税書類はまとめて保管しておくと便利。',
+         '',
+         ''
+       )">
+    <h3>帰宅 <span class="detail-label">🏠</span></h3>
+    <p>おつかれさまでした！</p>
+  </div>
+</div>
+
 </div>
 
 </div>
